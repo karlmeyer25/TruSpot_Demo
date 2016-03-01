@@ -29,7 +29,8 @@ dependencies {
 }
 
 appengine {
-  downloadSdk = true
+    jvmFlags = ['-Ddatastore.backing_store="/Users/yavoryordanov/AndroidstudioProjects/TruSpot/backend/local_db.bin"']
+    downloadSdk = true
   appcfg {
     oauth2 = true
   }
