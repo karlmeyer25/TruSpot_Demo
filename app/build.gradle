@@ -21,7 +21,19 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    // design
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
+    compile 'com.android.support:support-v13:23.1.1'
+
+    // google
+    compile 'com.google.android.gms:play-services-maps:8.4.0'
+
+    // other
+    // https://github.com/JakeWharton/butterknife
+    compile 'com.jakewharton:butterknife:7.0.1'
+
+    // backend
     compile project(path: ':backend', configuration: 'android-endpoints')
 }

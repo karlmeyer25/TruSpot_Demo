@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">TruSpot</string>
     <string name="action_settings">Settings</string>
+
+    <!-- Tabs -->
+    <string name="tab_map">Map</string>
+    <string name="tab_nearby">Nearby</string>
 </resources>
