@@ -1,5 +1,10 @@
 package com.truspot.android.fragments;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,8 +17,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.truspot.android.R;
+import com.truspot.android.ui.PdmPinView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -141,5 +151,24 @@ public class TruSpotMapFragment
                 DEFAULT_CAMERA_ZOOM);
 
         mGoogleMap.moveCamera(cameraUpdate);
+
+        /*
+        PdmPinView img = new PdmPinView(getActivity());
+        img.setPadding(20, 20, 20, 20);
+        img.setLayoutParams(new ViewGroup.LayoutParams(200, 200));
+
+        Drawable d = img.getDrawable();
+        Bitmap bitmap = Bitmap.createBitmap(d.getIntrinsicWidth(),
+                d.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+
+        BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(bitmap);
+
+        MarkerOptions markerOptions = new MarkerOptions().position(USA)
+                .title("Current Location")
+                .snippet("Thinking of finding some thing...")
+                .icon(bd);
+
+        Marker mMarker = googleMap.addMarker(markerOptions);
+        */
     }
 }

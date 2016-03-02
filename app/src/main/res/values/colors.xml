@@ -13,4 +13,8 @@
 
     <!-- Dividers -->
     <color name="divider">#B6B6B6</color>
+
+    <!-- Borders -->
+    <color name="pdm_border">#80FFFFFF</color>
+
 </resources>
