@@ -1,5 +1,9 @@
 package com.truspot.backend.entity;
 
+import com.google.api.server.spi.config.AnnotationBoolean;
+import com.google.api.server.spi.config.ApiResourceProperty;
+import com.googlecode.objectify.Key;
+import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.truspot.backend.abstracts.AEntity;
 import com.truspot.backend.util.ValidateUtil;
@@ -9,6 +13,7 @@ import static com.truspot.backend.OfyService.ofy;
 /**
  * Created by yavoryordanov on 3/1/16.
  */
+@Entity
 public class Venue extends AEntity<Venue> {
 
     // variables
@@ -43,6 +48,11 @@ public class Venue extends AEntity<Venue> {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+    public Key<Venue> getKey() {
+        return createKey(id);
     }
 
     public String getName() {
@@ -109,18 +119,27 @@ public class Venue extends AEntity<Venue> {
     }
 
     // static methods
+    public static Key<Venue> createKey(long id) {
+        return createKey(Venue.class, id);
+    }
+
     public static Venue findById(long id) {
-        return ofy().load().type(Venue.class).id(id).now();
+        return findById(Venue.class, id);
     }
 
     /**
      * @throws {@link com.google.api.server.spi.response.NotFoundException} - if the loaded value was not found
      * */
     public static Venue findByIdSafe(long id) {
-        return ofy().load().type(Venue.class).id(id).safe();
+        return findByIdSafe(Venue.class, id);
     }
 
     public static List<Venue> findAll() {
-        return ofy().load().type(Venue.class).list();
+        return findAll(Venue.class);
+    }
+
+    public static void deleteById(long id) {
+        SocialMediaItem.deleteByVenue(id);
+        deleteById(Venue.class, id);
     }
 }

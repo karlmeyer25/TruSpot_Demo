@@ -3,14 +3,17 @@ package com.truspot.backend.entity;
 import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
 import com.googlecode.objectify.Key;
+import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Parent;
 import com.truspot.backend.abstracts.AEntity;
-import static com.truspot.backend.OfyService.ofy;
+import com.truspot.backend.util.ValidateUtil;
+import java.util.List;
 
 /**
  * Created by yavoryordanov on 3/1/16.
  */
+@Entity
 public class SocialMediaItem extends AEntity<SocialMediaItem> {
 
     // variables
@@ -43,6 +46,11 @@ public class SocialMediaItem extends AEntity<SocialMediaItem> {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+    public Key<SocialMediaItem> getKey() {
+        return createKey(parentKey.getId(), id);
     }
 
     public String getUsername() {
@@ -86,26 +94,52 @@ public class SocialMediaItem extends AEntity<SocialMediaItem> {
     }
 
     @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-    public Key<Venue> getParentKey() {
+    public Key<Venue> getVenueKey() {
         return parentKey;
     }
 
     @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-    public void setParentKey(Key<Venue> parentKey) {
-        this.parentKey = parentKey;
+    public void setVenueId(long venueId) {
+        this.parentKey = Venue.createKey(venueId);
+    }
+
+    @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+    public void setVenueKey(Key<Venue> venueKey) {
+        this.parentKey = venueKey;
     }
 
     @Override
     public void checkValidation() throws Exception {
-        // TODO add func
+        ValidateUtil.checkNotNull(parentKey);
+        ValidateUtil.checkNotEmpty(username);
     }
 
     // static methods
-    public static SocialMediaItem findById(long id) {
-        return ofy().load().type(SocialMediaItem.class).id(id).now();
+    public static List<Key<SocialMediaItem>> findKeysByVenue(long venueId) {
+        return findKeysByParent(SocialMediaItem.class, Venue.createKey(venueId));
     }
 
-    public static SocialMediaItem findByIdSafe(long id) {
-        return ofy().load().type(SocialMediaItem.class).id(id).safe();
+    public static Key<SocialMediaItem> createKey(long venueId, long id) {
+        return Key.create(Venue.createKey(venueId), SocialMediaItem.class, id);
+    }
+
+    public static SocialMediaItem findById(long venueId, long id) {
+        return findByKey(createKey(venueId, id));
+    }
+
+    public static SocialMediaItem findByIdSafe(long venueId, long id) {
+        return findByKeySafe(createKey(venueId, id));
+    }
+
+    public static List<SocialMediaItem> findByVenue(long venueId) {
+        return findByParent(SocialMediaItem.class, Venue.createKey(venueId));
+    }
+
+    public static void deleteById(long venueId, long id) {
+        deleteByKey(createKey(venueId, id));
+    }
+
+    public static void deleteByVenue(long venueId) {
+        deleteByParent(SocialMediaItem.class, Venue.createKey(venueId));
     }
 }

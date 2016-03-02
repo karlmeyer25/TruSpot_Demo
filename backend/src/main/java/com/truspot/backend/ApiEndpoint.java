@@ -11,7 +11,10 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.truspot.backend.entity.SocialMediaItem;
 import com.truspot.backend.entity.Venue;
+
 import java.util.List;
+import java.util.logging.Logger;
+
 import javax.inject.Named;
 
 /** An endpoint class we are exposing */
@@ -26,6 +29,10 @@ import javax.inject.Named;
 )
 public class ApiEndpoint {
 
+    private static final String BASIC_TAG = ApiEndpoint.class.getName();
+
+    private static final Logger LOG = Logger.getLogger(BASIC_TAG);
+
     @ApiMethod(name = "createVenue", path = "venues", httpMethod = ApiMethod.HttpMethod.POST)
     public Venue createVenue(Venue venue) throws Exception {
         venue.save();
@@ -35,10 +42,17 @@ public class ApiEndpoint {
 
     @ApiMethod(name = "updateVenue", path = "venues/{id}", httpMethod = ApiMethod.HttpMethod.PUT)
     public Venue updateVenue(@Named("id") Long id, Venue venue) throws Exception {
-        venue.setId(id);
+        Venue old = Venue.findByIdSafe(id);
+
+        venue.setId(old.getId());
         venue.save();
 
         return venue;
+    }
+
+    @ApiMethod(name = "removeVenue", path = "venues/{id}", httpMethod = ApiMethod.HttpMethod.DELETE)
+    public void removeVenue(@Named("id") Long id) {
+        Venue.deleteById(id);
     }
 
     @ApiMethod(name = "getVenue", path = "venues/{id}", httpMethod = ApiMethod.HttpMethod.GET)
@@ -51,10 +65,44 @@ public class ApiEndpoint {
         return Venue.findAll();
     }
 
-    @ApiMethod(name = "createSocialMedia", path = "venues/{id}/socialmedia", httpMethod = ApiMethod.HttpMethod.POST)
-    public SocialMediaItem createSocialMedia(SocialMediaItem item) throws Exception {
+    @ApiMethod(name = "createSocialMediaItem", path = "venues/{venueId}/socialmedia", httpMethod = ApiMethod.HttpMethod.POST)
+    public SocialMediaItem createSocialMediaItem(@Named("venueId") Long venueId, SocialMediaItem item) throws Exception {
+        item.setVenueId(venueId);
         item.save();
 
         return item;
+    }
+
+    @ApiMethod(name = "updateSocialMediaItem", path = "venues/{venueId}/socialmedia/{id}", httpMethod = ApiMethod.HttpMethod.PUT)
+    public SocialMediaItem updateSocialMediaItem(@Named("venueId") Long venueId, @Named("id") Long id, SocialMediaItem item) throws Exception {
+        SocialMediaItem old = SocialMediaItem.findByIdSafe(venueId, id);
+
+        item.setId(old.getId());
+        item.setVenueId(venueId);
+        item.save();
+
+        return item;
+    }
+
+    @ApiMethod(name = "removeSocialMediaItem", path = "venues/{venueId}/socialmedia/{id}", httpMethod = ApiMethod.HttpMethod.DELETE)
+    public void removeSocialMediaItem(@Named("venueId") Long venueId, @Named("id") Long id) {
+        LOG.info(String.format("remove SMI - Venue id: %s, id: %s", venueId, id));
+
+        SocialMediaItem.deleteById(venueId, id);
+    }
+
+    @ApiMethod(name = "removeSocialMedia", path = "venues/{venueId}/socialmedia", httpMethod = ApiMethod.HttpMethod.DELETE)
+    public void removeSocialMedia(@Named("venueId") Long venueId) {
+        SocialMediaItem.deleteByVenue(venueId);
+    }
+
+    @ApiMethod(name = "getSocialMediaItem", path = "venues/{venueId}/socialmedia/{id}", httpMethod = ApiMethod.HttpMethod.GET)
+    public SocialMediaItem getSocialMediaItem(@Named("venueId") Long venueId, @Named("id") Long id) {
+            return SocialMediaItem.findByIdSafe(venueId, id);
+    }
+
+    @ApiMethod(name = "getSocialMedia", path = "venues/{venueId}/socialmedia", httpMethod = ApiMethod.HttpMethod.GET)
+    public List<SocialMediaItem> getSocialMedia(@Named("venueId") Long venueId) {
+        return SocialMediaItem.findByVenue(venueId);
     }
 }
