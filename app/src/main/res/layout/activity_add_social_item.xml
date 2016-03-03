@@ -13,18 +13,38 @@
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
     <ImageView
-        android:id="@+id/iv_activity_add_social_item_container"
+        android:id="@+id/iv_activity_add_social_item_avatar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_below="@id/toolbar_activity_add_social_item"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </ImageView>
-    <ImageView
-        android:id="@+id/iv_activity_add_social_item_play_video"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/margin_8"/>
+    <TextView
+        android:id="@+id/tv_activity_add_social_item_name"
+        android:layout_below="@id/iv_activity_add_social_item_avatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:src="@drawable/ic_play_youtube_video_70dp"
-        android:visibility="gone"/>
+        android:layout_margin="@dimen/margin_8"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_5"
+        android:textColor="@color/primary_text"
+        android:text="James Hawkins"/>
+    <com.rey.material.widget.EditText
+        android:id="@+id/et_activity_add_social_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_8"
+        android:layout_below="@id/tv_activity_add_social_item_name"
+        app:et_labelPadding="8dp"
+        app:et_labelEnable="true"/>
+    <ImageView
+        android:id="@+id/iv_activity_add_social_item_container"
+        android:layout_below="@id/et_activity_add_social_item"
+        android:layout_centerHorizontal="true"
+        android:layout_width="200dp"
+        android:layout_height="200dp">
+    </ImageView>
     <com.rey.material.widget.FloatingActionButton
         android:id="@+id/fab_activity_add_social_item_share"
         android:layout_width="wrap_content"
