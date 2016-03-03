@@ -98,6 +98,10 @@ public class SocialMediaItem extends AEntity<SocialMediaItem> {
         return parentKey;
     }
 
+    public Long getVenueId() {
+        return parentKey.getId();
+    }
+
     @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
     public void setVenueId(long venueId) {
         this.parentKey = Venue.createKey(venueId);
@@ -133,6 +137,10 @@ public class SocialMediaItem extends AEntity<SocialMediaItem> {
 
     public static List<SocialMediaItem> findByVenue(long venueId) {
         return findByParent(SocialMediaItem.class, Venue.createKey(venueId));
+    }
+
+    public static List<SocialMediaItem> findAll() {
+        return findAll(SocialMediaItem.class);
     }
 
     public static void deleteById(long venueId, long id) {

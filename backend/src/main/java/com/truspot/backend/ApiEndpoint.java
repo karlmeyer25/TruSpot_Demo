@@ -11,8 +11,12 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.truspot.backend.entity.SocialMediaItem;
 import com.truspot.backend.entity.Venue;
+import com.truspot.backend.entity.VenueFull;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.inject.Named;
@@ -104,5 +108,40 @@ public class ApiEndpoint {
     @ApiMethod(name = "getSocialMedia", path = "venues/{venueId}/socialmedia", httpMethod = ApiMethod.HttpMethod.GET)
     public List<SocialMediaItem> getSocialMedia(@Named("venueId") Long venueId) {
         return SocialMediaItem.findByVenue(venueId);
+    }
+
+    @ApiMethod(name = "getVenueFull", path = "venues/{id}/full", httpMethod = ApiMethod.HttpMethod.GET)
+    public VenueFull getVenueFull(@Named("id") Long id) {
+        Venue venue = Venue.findByIdSafe(id);
+        List<SocialMediaItem> feed = SocialMediaItem.findByVenue(id);
+
+        return new VenueFull(venue, feed);
+    }
+
+    @ApiMethod(name = "getVenuesFull", path = "venues/full", httpMethod = ApiMethod.HttpMethod.GET)
+    public Collection<VenueFull> getVenuesFull() {
+        List<Venue> venues = Venue.findAll();
+
+        if (venues != null && !venues.isEmpty()) {
+            Map<Long, VenueFull> vfMap = new HashMap<>();
+
+            for (Venue venue : venues) {
+                VenueFull vf = new VenueFull(venue, null);
+
+                vfMap.put(venue.getId(), vf);
+            }
+
+            List<SocialMediaItem> feed = SocialMediaItem.findAll();
+
+            if (feed != null && !feed.isEmpty()) {
+                for (SocialMediaItem item : feed) {
+                    vfMap.get(item.getVenueId()).addSocialMediaItem(item);
+                }
+            }
+
+            return vfMap.values();
+        }
+
+        return null;
     }
 }
