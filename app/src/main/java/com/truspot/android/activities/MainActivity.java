@@ -7,10 +7,21 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
+import android.view.View;
+import com.rey.material.app.Dialog;
+import com.rey.material.app.SimpleDialog;
 import com.truspot.android.R;
-import com.truspot.android.fragments.TruSpotMapFragment;
 import com.truspot.android.fragments.NearbyFragment;
+import com.truspot.android.fragments.TruSpotMapFragment;
+import com.truspot.android.tasks.GetVenuesFullTask;
+import com.truspot.android.tasks.abstracts.SimpleTask;
+import com.truspot.android.utils.IntentUtil;
+import com.truspot.android.utils.LogUtil;
+import com.truspot.android.utils.Util;
+import com.truspot.backend.api.model.VenueFull;
+
+import java.io.IOException;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -44,6 +55,12 @@ public class MainActivity extends AppCompatActivity {
 
         setUiSettings();
         setAdapters();
+
+        if (Util.hasConnection(this)) {
+            loadVenues();
+        } else {
+            showNoInternetDialog();
+        }
     }
 
     private void setUiSettings() {
@@ -56,6 +73,66 @@ public class MainActivity extends AppCompatActivity {
         vp.setAdapter(mTabsAdapter);
 
         tl.setupWithViewPager(vp);
+    }
+
+    private void showNoInternetDialog() {
+        SimpleDialog.Builder builder = new SimpleDialog.Builder(com.rey.material.R.style.Material_App_Dialog_Simple_Light);
+
+        builder.message(getString(R.string.dialog_msg_no_internet_turn_it_on)).
+                title(getString(R.string.dialog_title_warning)).
+                positiveAction(getString(R.string.dialog_btn_go_to_internet_settings)).
+                negativeAction(getString(R.string.dialog_btn_cancel));
+
+        final Dialog dialog = builder.build(this);
+
+        dialog.positiveActionClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+                finish();
+
+                startActivity(IntentUtil.getSettingsIntent());
+            }
+
+        }).negativeActionClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+                finish();
+            }}
+        );
+
+        dialog.show();
+    }
+
+    private void loadVenues() {
+        final String TAG = Util.stringsToPath(BASIC_TAG, "loadVenues");
+
+        new GetVenuesFullTask(new SimpleTask.SimpleCallback<List<VenueFull>>() {
+
+            @Override
+            public void onStart() {
+                LogUtil.log(TAG, "onStart");
+            }
+
+            @Override
+            public void onComplete(List<VenueFull> res) {
+                if (res != null) {
+                    for (VenueFull vf : res) {
+                        try {
+                            LogUtil.log(TAG, vf.toPrettyString());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+        }).execute();
     }
 
     // inner classes
