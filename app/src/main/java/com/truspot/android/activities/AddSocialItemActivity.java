@@ -14,6 +14,10 @@ import com.rey.material.widget.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 import com.truspot.android.R;
 import com.truspot.android.enums.SocialMediaEnum;
+import com.truspot.android.picasso.RoundedTransformation;
+import com.truspot.android.utils.Util;
+
+import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -24,9 +28,11 @@ public class AddSocialItemActivity extends AppCompatActivity {
     public static final String BASIC_TAG = AddSocialItemActivity.class.getName();
 
     public static final String BUNDLE_SOCIAL_MEDIA_TYPE = "social_media_type";
+    public static final String BUNDLE_SOCIAL_MEDIA_PATH = "social_media_path";
 
     // variables
     private SocialMediaEnum mSocialMediaType;
+    private String mSocialMediaPath;
     private Picasso mPicasso;
 
     // UI
@@ -34,15 +40,18 @@ public class AddSocialItemActivity extends AppCompatActivity {
     Toolbar toolbar;
     @Bind(R.id.fab_activity_add_social_item_share)
     FloatingActionButton fabShare;
+    @Bind(R.id.iv_activity_add_social_item_avatar)
+    ImageView ivAvatar;
     @Bind(R.id.iv_activity_add_social_item_container)
     ImageView ivContainer;
-    @Bind(R.id.iv_activity_add_social_item_play_video)
-    ImageView ivPlayVideo;
 
     // get intent methods
-    public static Intent getIntent(Context context, SocialMediaEnum socialMediaType) {
+    public static Intent getIntent(Context context,
+                                   SocialMediaEnum socialMediaType,
+                                   String socialMediaPath) {
         Intent i = new Intent(context, AddSocialItemActivity.class);
         i.putExtra(BUNDLE_SOCIAL_MEDIA_TYPE, socialMediaType);
+        i.putExtra(BUNDLE_SOCIAL_MEDIA_PATH, socialMediaPath);
 
         return i;
     }
@@ -59,6 +68,7 @@ public class AddSocialItemActivity extends AppCompatActivity {
         initVariables();
         initListeners();
         setToolbarUiSettings();
+        loadUserAvatar();
         loadSocialMedia();
     }
 
@@ -78,6 +88,7 @@ public class AddSocialItemActivity extends AppCompatActivity {
 
     private void initExtras() {
         mSocialMediaType = (SocialMediaEnum) getIntent().getSerializableExtra(BUNDLE_SOCIAL_MEDIA_TYPE);
+        mSocialMediaPath = getIntent().getStringExtra(BUNDLE_SOCIAL_MEDIA_PATH);
     }
 
     private void initVariables() {
@@ -101,8 +112,23 @@ public class AddSocialItemActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    private void loadUserAvatar() {
+        mPicasso.load("http://greatist.com/sites/default/files/styles/square_profile/public/Jeff-Cattel-Headshot1.jpg")
+                .placeholder(R.drawable.default_avatar)
+                .noFade()
+                .resize(
+                        Util.convertDpiToPixels(this, 100),
+                        Util.convertDpiToPixels(this, 100))
+                .centerCrop()
+                .transform(new RoundedTransformation(
+                        Util.convertDpiToPixels(this, 100) / 2,
+                        0))
+                .config(Bitmap.Config.RGB_565)
+                .into(ivAvatar);
+    }
+
     private void loadSocialMedia() {
-        mPicasso.load("https://campuscrush101.files.wordpress.com/2011/03/girly-drinks-pink-drink.jpg")
+        mPicasso.load(new File(mSocialMediaPath))
                 .fit()
                 .centerCrop()
                 .config(Bitmap.Config.RGB_565)
