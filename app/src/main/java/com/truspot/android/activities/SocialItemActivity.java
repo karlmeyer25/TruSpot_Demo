@@ -34,6 +34,10 @@ public class SocialItemActivity extends AppCompatActivity {
     FloatingActionButton fab;
     @Bind(R.id.iv_activity_social_item_add_text)
     ImageView ivAddText;
+    @Bind(R.id.iv_activity_social_item_add_photo)
+    ImageView ivAddPhoto;
+    @Bind(R.id.iv_activity_social_item_add_video)
+    ImageView ivAddVideo;
 
     // get intent methods
     public static Intent getIntent(Context context) {
@@ -94,13 +98,13 @@ public class SocialItemActivity extends AppCompatActivity {
             }
         });
 
-        ivAddText.setOnClickListener(new View.OnClickListener() {
+        ivAddPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ftl.hide();
 
                 Intent goToAddSocialItemActivity =
-                        AddSocialItemActivity.getIntent(SocialItemActivity.this, SocialMediaEnum.TEXT);
+                        AddSocialItemActivity.getIntent(SocialItemActivity.this, SocialMediaEnum.PHOTO);
 
                 startActivityForResult(goToAddSocialItemActivity, REQUEST_ADD_SOCIAL_ITEM);
             }
