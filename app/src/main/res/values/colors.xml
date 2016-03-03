@@ -15,7 +15,7 @@
     <color name="divider">#B6B6B6</color>
 
     <!-- Borders -->
-    <color name="pdm_border">#80FFFFFF</color>
+    <color name="pdm_border">#80FF5252</color>
 
     <!-- Other colors -->
     <color name="semi_black">#80000000</color>

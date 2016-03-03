@@ -1,5 +1,7 @@
 package com.truspot.android.fragments;
 
+import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,11 +15,21 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.rey.material.widget.FloatingActionButton;
 import com.truspot.android.R;
+import com.truspot.android.activities.SocialItemActivity;
 import com.truspot.android.models.event.VenuesEvent;
+import com.truspot.android.ui.PdmDrawable;
+import com.truspot.android.utils.Util;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -38,12 +50,15 @@ public class TruSpotMapFragment
     // variables
     private GoogleMap mGoogleMap;
     private EventBus mBus;
+    private Location mCurrLocation;
 
     // UI
     @Bind(R.id.mv_fragment_truspot_map)
     MapView mv;
     @Bind(R.id.fl_fragment_truspot_map_progress)
     FrameLayout flProgress;
+    @Bind(R.id.fab_fragment_truspot_map_my_location)
+    FloatingActionButton fabMyLocation;
 
     // get instance methods
     public static TruSpotMapFragment getInstance() {
@@ -75,7 +90,7 @@ public class TruSpotMapFragment
         super.onActivityCreated(savedInstanceState);
 
         initVariables();
-
+        initListeners();
         getMapAsync();
     }
 
@@ -136,6 +151,26 @@ public class TruSpotMapFragment
         mBus.register(this);
     }
 
+    private void initListeners() {
+        fabMyLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO : just for testing. Uncomment the lines below when done.
+                Intent goToSocialItemActivity = SocialItemActivity.getIntent(getActivity());
+                startActivity(goToSocialItemActivity);
+
+                /*
+                if (mCurrLocation != null) {
+                    LatLng latLng = new LatLng(mCurrLocation.getLatitude(),
+                            mCurrLocation.getLongitude());
+
+                    updateCamera(latLng);
+                }
+                */
+            }
+        });
+    }
+
     private void getMapAsync() {
         mv.getMapAsync(this);
     }
@@ -144,15 +179,43 @@ public class TruSpotMapFragment
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
 
-        mGoogleMap.setMyLocationEnabled(true);
-
-        UiSettings settings = googleMap.getUiSettings();
+        // map settings
+        UiSettings settings = mGoogleMap.getUiSettings();
 
         settings.setMyLocationButtonEnabled(false);
         settings.setZoomControlsEnabled(false);
 
+        // enable my location
+        mGoogleMap.setMyLocationEnabled(true);
+        mGoogleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location location) {
+                mCurrLocation = location;
+            }
+        });
+
+        // TODO : initial zoom to a place where venues are available. Remove it when needed.
+        updateCamera(USA);
+
+        // TODO: this is a test marker. Replace it when venues from db are available.
+        PdmDrawable drawable = new PdmDrawable(getResources().getColor(R.color.pdm_border),
+                getResources().getColor(R.color.accent),
+                Util.convertDpiToPixels(getActivity(), 5));
+        BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(Util.convertToBitmap(drawable,
+                Util.convertDpiToPixels(getActivity(), 50),
+                Util.convertDpiToPixels(getActivity(), 50)));
+
+        MarkerOptions markerOptions = new MarkerOptions().position(USA)
+                .title("Current Location")
+                .snippet("USA")
+                .icon(bd);
+
+        Marker mMarker = googleMap.addMarker(markerOptions);
+    }
+
+    private void updateCamera(LatLng location) {
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
-                USA,
+                location,
                 DEFAULT_CAMERA_ZOOM);
 
         mGoogleMap.moveCamera(cameraUpdate);
