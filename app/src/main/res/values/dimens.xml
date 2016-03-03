@@ -3,4 +3,83 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <!-- Text sizes -->
+    <dimen name="text_size_1">8dp</dimen>
+    <dimen name="text_size_2">10dp</dimen>
+    <dimen name="text_size_3">12dp</dimen>
+    <dimen name="text_size_4">14dp</dimen>
+    <dimen name="text_size_5">16dp</dimen>
+    <dimen name="text_size_6">18dp</dimen>
+    <dimen name="text_size_7">20dp</dimen>
+    <dimen name="text_size_8">22dp</dimen>
+    <dimen name="text_size_9">24dp</dimen>
+    <dimen name="text_size_10">26dp</dimen>
+    <dimen name="text_size_11">28dp</dimen>
+    <dimen name="text_size_12">30dp</dimen>
+    <dimen name="text_size_13">32dp</dimen>
+    <dimen name="text_size_14">34dp</dimen>
+    <dimen name="text_size_15">36dp</dimen>
+    <dimen name="text_size_16">38dp</dimen>
+    <dimen name="text_size_17">40dp</dimen>
+
+    <!-- Paddings -->
+    <dimen name="padding_1">2dp</dimen>
+    <dimen name="padding_2">4dp</dimen>
+    <dimen name="padding_3">6dp</dimen>
+    <dimen name="padding_4">8dp</dimen>
+    <dimen name="padding_5">10dp</dimen>
+    <dimen name="padding_6">12dp</dimen>
+    <dimen name="padding_7">14dp</dimen>
+    <dimen name="padding_8">16dp</dimen>
+    <dimen name="padding_9">18dp</dimen>
+    <dimen name="padding_10">20dp</dimen>
+    <dimen name="padding_11">22dp</dimen>
+    <dimen name="padding_12">24dp</dimen>
+    <dimen name="padding_13">26dp</dimen>
+    <dimen name="padding_14">28dp</dimen>
+    <dimen name="padding_15">30dp</dimen>
+    <dimen name="padding_16">32dp</dimen>
+    <dimen name="padding_17">34dp</dimen>
+    <dimen name="padding_18">36dp</dimen>
+    <dimen name="padding_19">38dp</dimen>
+    <dimen name="padding_20">40dp</dimen>
+    <dimen name="padding_21">42dp</dimen>
+    <dimen name="padding_22">44dp</dimen>
+    <dimen name="padding_23">46dp</dimen>
+    <dimen name="padding_24">48dp</dimen>
+
+    <!-- Margins -->
+    <dimen name="margin_1">2dp</dimen>
+    <dimen name="margin_2">4dp</dimen>
+    <dimen name="margin_3">6dp</dimen>
+    <dimen name="margin_4">8dp</dimen>
+    <dimen name="margin_5">10dp</dimen>
+    <dimen name="margin_6">12dp</dimen>
+    <dimen name="margin_7">14dp</dimen>
+    <dimen name="margin_8">16dp</dimen>
+    <dimen name="margin_9">18dp</dimen>
+    <dimen name="margin_10">20dp</dimen>
+    <dimen name="margin_11">22dp</dimen>
+    <dimen name="margin_12">24dp</dimen>
+    <dimen name="margin_13">26dp</dimen>
+    <dimen name="margin_14">28dp</dimen>
+    <dimen name="margin_15">30dp</dimen>
+    <dimen name="margin_16">32dp</dimen>
+
+    <!-- Elevation -->
+    <dimen name="elevation_1">2dp</dimen>
+    <dimen name="elevation_2">4dp</dimen>
+    <dimen name="elevation_3">6dp</dimen>
+    <dimen name="elevation_4">8dp</dimen>
+    <dimen name="elevation_5">10dp</dimen>
+    <dimen name="elevation_6">12dp</dimen>
+    <dimen name="elevation_7">14dp</dimen>
+    <dimen name="elevation_8">16dp</dimen>
+    <dimen name="elevation_9">18dp</dimen>
+    <dimen name="elevation_10">20dp</dimen>
+
+    <!-- Corners -->
+    <dimen name="corners_normal">4dp</dimen>
+
 </resources>
