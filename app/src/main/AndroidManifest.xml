@@ -34,7 +34,7 @@
         <activity
             android:name=".activities.AddSocialItemActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/title_social_item"/>
+            android:label="@string/title_add_social_item"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

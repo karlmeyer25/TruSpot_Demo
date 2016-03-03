@@ -37,6 +37,8 @@ dependencies {
     // other
     // https://github.com/JakeWharton/butterknife
     compile 'com.jakewharton:butterknife:7.0.1'
+    // http://square.github.io/picasso/
+    compile 'com.squareup.picasso:picasso:2.5.2'
 
     // backend
     compile project(path: ':backend', configuration: 'android-endpoints')
