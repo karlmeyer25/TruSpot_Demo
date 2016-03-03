@@ -1,5 +1,6 @@
 package com.truspot.android.fragments;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.rey.material.widget.FloatingActionButton;
 import com.truspot.android.R;
 import com.truspot.android.ui.PdmDrawable;
 import com.truspot.android.utils.Util;
@@ -40,10 +42,13 @@ public class TruSpotMapFragment
 
     // variables
     private GoogleMap mGoogleMap;
+    private Location mCurrLocation;
 
     // UI
     @Bind(R.id.mv_fragment_truspot)
     MapView mv;
+    @Bind(R.id.fab_fragment_truspot_my_location)
+    FloatingActionButton fabMyLocation;
 
     // get instance methods
     public static TruSpotMapFragment getInstance() {
@@ -74,6 +79,7 @@ public class TruSpotMapFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        initListeners();
         getMapAsync();
     }
 
@@ -127,26 +133,27 @@ public class TruSpotMapFragment
         }
     }
 
-    private void getMapAsync() {
-        mv.getMapAsync(this);
-    }
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
 
-        mGoogleMap.setMyLocationEnabled(true);
-
-        UiSettings settings = googleMap.getUiSettings();
+        // map settings
+        UiSettings settings = mGoogleMap.getUiSettings();
 
         settings.setMyLocationButtonEnabled(false);
         settings.setZoomControlsEnabled(false);
 
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
-                USA,
-                DEFAULT_CAMERA_ZOOM);
+        // enable my location
+        mGoogleMap.setMyLocationEnabled(true);
+        mGoogleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location location) {
+                mCurrLocation = location;
+            }
+        });
 
-        mGoogleMap.moveCamera(cameraUpdate);
+        // TODO : initial zoom to a place where venues are available. Remove it when needed.
+        updateCamera(USA);
 
         // TODO: this is a test marker. Replace it when venues from db are available.
         PdmDrawable drawable = new PdmDrawable(getResources().getColor(R.color.pdm_border),
@@ -162,5 +169,31 @@ public class TruSpotMapFragment
                 .icon(bd);
 
         Marker mMarker = googleMap.addMarker(markerOptions);
+    }
+
+    private void initListeners() {
+        fabMyLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCurrLocation != null) {
+                    LatLng latLng = new LatLng(mCurrLocation.getLatitude(),
+                            mCurrLocation.getLongitude());
+
+                    updateCamera(latLng);
+                }
+            }
+        });
+    }
+
+    private void getMapAsync() {
+        mv.getMapAsync(this);
+    }
+
+    private void updateCamera(LatLng location) {
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
+                location,
+                DEFAULT_CAMERA_ZOOM);
+
+        mGoogleMap.moveCamera(cameraUpdate);
     }
 }

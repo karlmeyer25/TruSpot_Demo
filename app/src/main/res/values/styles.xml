@@ -28,4 +28,10 @@
         <item name="android:textColor">#80FFFFFF</item>
     </style>
 
+    <!-- styles for fab -->
+    <style name="FAB" parent="Material.Widget.FloatingActionButton.Light">
+        <item name="rd_rippleColor">#33000000</item>
+        <item name="fab_backgroundColor">@color/icons</item>
+    </style>
+
 </resources>
