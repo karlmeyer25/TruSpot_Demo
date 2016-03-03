@@ -1,10 +1,5 @@
 package com.truspot.android.fragments;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -23,7 +18,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.truspot.android.R;
-import com.truspot.android.ui.PdmPinView;
+import com.truspot.android.ui.PdmDrawable;
+import com.truspot.android.utils.Util;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -152,23 +148,19 @@ public class TruSpotMapFragment
 
         mGoogleMap.moveCamera(cameraUpdate);
 
-        /*
-        PdmPinView img = new PdmPinView(getActivity());
-        img.setPadding(20, 20, 20, 20);
-        img.setLayoutParams(new ViewGroup.LayoutParams(200, 200));
-
-        Drawable d = img.getDrawable();
-        Bitmap bitmap = Bitmap.createBitmap(d.getIntrinsicWidth(),
-                d.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-
-        BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(bitmap);
+        // TODO: this is a test marker. Replace it when venues from db are available.
+        PdmDrawable drawable = new PdmDrawable(getResources().getColor(R.color.pdm_border),
+                getResources().getColor(R.color.accent),
+                Util.convertDpiToPixels(getActivity(), 5));
+        BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(Util.convertToBitmap(drawable,
+                Util.convertDpiToPixels(getActivity(), 50),
+                Util.convertDpiToPixels(getActivity(), 50)));
 
         MarkerOptions markerOptions = new MarkerOptions().position(USA)
                 .title("Current Location")
-                .snippet("Thinking of finding some thing...")
+                .snippet("USA")
                 .icon(bd);
 
         Marker mMarker = googleMap.addMarker(markerOptions);
-        */
     }
 }

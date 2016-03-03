@@ -3,7 +3,6 @@ package com.truspot.android.ui;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -13,62 +12,61 @@ import android.graphics.drawable.Drawable;
 public class PdmDrawable extends Drawable {
 
     // variables
-    private int mColor;
+    private int mBorderColor;
+    private int mDensityColor;
     private int mBorderWidth;
-    private int mBorderRadius;
 
     // graphic variables
-    private Paint mPaint;
-    private RectF mInnerRect;
-    private RectF mOuterRect;
-    private Path mPath;
+    private Paint mBorderPaint;
+    private Paint mDensityPaint;
+    private RectF mBorderCircle;
+    private RectF mDensityCircle;
 
-    public PdmDrawable(int color, int borderWidth, int borderRadius) {
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setStyle(Paint.Style.FILL);
+    public PdmDrawable(int borderColor, int densityColor, int borderWidth) {
+        mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mBorderPaint.setStyle(Paint.Style.FILL);
 
-        mPath = new Path();
-        mPath.setFillType(Path.FillType.EVEN_ODD);
+        mDensityPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mDensityPaint.setStyle(Paint.Style.FILL);
 
-        mInnerRect = new RectF();
-        mOuterRect = new RectF();
+        mBorderCircle = new RectF();
+        mDensityCircle = new RectF();
 
-        mColor = color;
+        mBorderColor = borderColor;
+        mDensityColor = densityColor;
+
         mBorderWidth = borderWidth;
-        mBorderRadius = borderRadius;
     }
 
     @Override
     protected void onBoundsChange(Rect bounds) {
-        mPath.reset();
-
-        mInnerRect.set(bounds.left,
+        mBorderCircle.set(bounds.left,
                 bounds.top,
                 bounds.right,
                 bounds.bottom);
-        mPath.addOval(mInnerRect, Path.Direction.CW);
 
-        mOuterRect.set(bounds.left + mBorderWidth,
+        mDensityCircle.set(bounds.left + mBorderWidth,
                 bounds.top + mBorderWidth,
                 bounds.right - mBorderWidth,
                 bounds.bottom - mBorderWidth);
-        mPath.addOval(mOuterRect, Path.Direction.CW);
     }
 
     @Override
     public void draw(Canvas canvas) {
-        mPaint.setColor(mColor);
-        canvas.drawPath(mPath, mPaint);
+        mBorderPaint.setColor(mBorderColor);
+        mDensityPaint.setColor(mDensityColor);
+        canvas.drawOval(mBorderCircle, mBorderPaint);
+        canvas.drawOval(mDensityCircle, mDensityPaint);
     }
 
     @Override
     public void setAlpha(int alpha) {
-        mPaint.setAlpha(alpha);
+        mBorderPaint.setAlpha(alpha);
     }
 
     @Override
     public void setColorFilter(ColorFilter cf) {
-        mPaint.setColorFilter(cf);
+        mBorderPaint.setColorFilter(cf);
     }
 
     @Override
