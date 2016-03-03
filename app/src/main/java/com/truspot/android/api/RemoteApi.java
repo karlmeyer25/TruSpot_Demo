@@ -2,6 +2,7 @@ package com.truspot.android.api;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+import com.truspot.android.constants.Constants;
 import com.truspot.backend.api.Api;
 
 /**
@@ -13,7 +14,7 @@ public class RemoteApi {
 
     public static Api getInstance() {
         if (mApi == null) {
-            mApi = new Api.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null).
+            mApi = new Api.Builder(AndroidHttp.newCompatibleTransport(), Constants.JSON_FACTORY, null).
                     setRootUrl("https://truspot-android.appspot.com/_ah/api").
                     build();
 

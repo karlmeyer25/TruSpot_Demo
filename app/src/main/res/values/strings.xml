@@ -5,6 +5,7 @@
     <!-- Titles -->
     <string name="title_social_item">Social Feed</string>
     <string name="title_add_social_item">Add Social Media</string>
+    <string name="title_venue">Venue</string>
 
     <!-- Tabs -->
     <string name="tab_map">Map</string>

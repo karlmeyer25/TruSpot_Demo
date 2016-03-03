@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.rey.material.widget.FloatingActionButton;
 import com.truspot.android.R;
 import com.truspot.android.activities.SocialItemActivity;
+import com.truspot.android.activities.VenueActivity;
 import com.truspot.android.models.event.VenuesEvent;
 import com.truspot.android.ui.PdmDrawable;
 import com.truspot.android.utils.ColorUtil;
@@ -35,6 +36,7 @@ import com.truspot.backend.api.model.VenueFull;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -187,13 +189,13 @@ public class TruSpotMapFragment
 
     @Subscribe
     public void onEvent(VenuesEvent.StartLoading event) {
+        LogUtil.log(BASIC_TAG, "start loading");
+
         flProgress.setVisibility(View.VISIBLE);
     }
 
     @Subscribe
     public void onEvent(VenuesEvent.CompleteLoading event) {
-        flProgress.setVisibility(View.GONE);
-
         mVenues = event.getVenues();
 
         tryLoadVenuesOnMap();
@@ -227,9 +229,13 @@ public class TruSpotMapFragment
 
             @Override
             public boolean onMarkerClick(Marker marker) {
-                // TODO add func
+                try {
+                    startActivity(VenueActivity.getIntent(getActivity(), mMarkerVenueMap.get(marker.getId())));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-                return false;
+                return true;
             }
 
         });
@@ -273,7 +279,9 @@ public class TruSpotMapFragment
             boundsBuilder.include(new LatLng(venue.getLat(), venue.getLng()));
         }
 
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), Util.convertDpiToPixels(getActivity(), 10)));
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), Util.convertDpiToPixels(getActivity(), 20)));
+
+        flProgress.setVisibility(View.GONE);
     }
 
     private int findMaxCapacity() {
