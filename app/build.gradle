@@ -27,7 +27,9 @@ dependencies {
     compile 'com.android.support:design:23.1.1'
     compile 'com.android.support:support-v13:23.1.1'
     // https://github.com/rey5137/material
-    compile 'com.github.rey5137:material:1.2.1'
+    compile 'com.github.rey5137:material:1.2.2'
+    // https://github.com/fafaldo/FABToolbar
+    compile 'com.github.fafaldo:fab-toolbar:1.2.0'
 
     // google
     compile 'com.google.android.gms:play-services-maps:8.4.0'

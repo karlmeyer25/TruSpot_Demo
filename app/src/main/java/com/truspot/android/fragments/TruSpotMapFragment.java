@@ -1,5 +1,6 @@
 package com.truspot.android.fragments;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.rey.material.widget.FloatingActionButton;
 import com.truspot.android.R;
+import com.truspot.android.activities.SocialItemActivity;
 import com.truspot.android.ui.PdmDrawable;
 import com.truspot.android.utils.Util;
 
@@ -175,12 +177,18 @@ public class TruSpotMapFragment
         fabMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // TODO : just for testing. Uncomment the lines below when done.
+                Intent goToSocialItemActivity = SocialItemActivity.getIntent(getActivity());
+                startActivity(goToSocialItemActivity);
+
+                /*
                 if (mCurrLocation != null) {
                     LatLng latLng = new LatLng(mCurrLocation.getLatitude(),
                             mCurrLocation.getLongitude());
 
                     updateCamera(latLng);
                 }
+                */
             }
         });
     }

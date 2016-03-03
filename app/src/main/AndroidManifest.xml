@@ -18,12 +18,23 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".activities.MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activities.SocialItemActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_social_item"/>
+
+        <activity
+            android:name=".activities.AddSocialItemActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_social_item"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

@@ -2,6 +2,10 @@
     <string name="app_name">TruSpot</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Titles -->
+    <string name="title_social_item">Social Feed</string>
+    <string name="title_add_social_item">Add Social Media</string>
+
     <!-- Tabs -->
     <string name="tab_map">Map</string>
     <string name="tab_nearby">Nearby</string>
