@@ -1,6 +1,7 @@
 package com.truspot.android.fragments;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,6 +18,7 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.rey.material.widget.FloatingActionButton;
@@ -25,10 +26,17 @@ import com.truspot.android.R;
 import com.truspot.android.activities.SocialItemActivity;
 import com.truspot.android.models.event.VenuesEvent;
 import com.truspot.android.ui.PdmDrawable;
+import com.truspot.android.utils.ColorUtil;
+import com.truspot.android.utils.LogUtil;
 import com.truspot.android.utils.Util;
+import com.truspot.backend.api.model.Venue;
+import com.truspot.backend.api.model.VenueFull;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.HashMap;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -45,12 +53,17 @@ public class TruSpotMapFragment
     // private constants
     private final static String BUNDLE_KEY_MAP_STATE = "map_data";
     private static final LatLng USA = new LatLng(37.09024, -95.712891);
-    private static final int DEFAULT_CAMERA_ZOOM = 15;
+    private static final int DEFAULT_CAMERA_ZOOM = 12;
+    private static final int MAX_PDM_SIZE_DP = 30;
+    private static final int MIN_PDM_SIZE_DP = 10;
 
     // variables
     private GoogleMap mGoogleMap;
     private EventBus mBus;
     private Location mCurrLocation;
+    private List<VenueFull> mVenues;
+    private HashMap<String, VenueFull> mMarkerVenueMap;
+    private boolean mVenuesLoaded;
 
     // UI
     @Bind(R.id.mv_fragment_truspot_map)
@@ -75,6 +88,7 @@ public class TruSpotMapFragment
         ButterKnife.bind(this, view);
 
         Bundle mapState = null;
+
         if (savedInstanceState != null) {
             // Load the map state bundle from the main savedInstanceState
             mapState = savedInstanceState.getBundle(BUNDLE_KEY_MAP_STATE);
@@ -171,6 +185,20 @@ public class TruSpotMapFragment
         });
     }
 
+    @Subscribe
+    public void onEvent(VenuesEvent.StartLoading event) {
+        flProgress.setVisibility(View.VISIBLE);
+    }
+
+    @Subscribe
+    public void onEvent(VenuesEvent.CompleteLoading event) {
+        flProgress.setVisibility(View.GONE);
+
+        mVenues = event.getVenues();
+
+        tryLoadVenuesOnMap();
+    }
+
     private void getMapAsync() {
         mv.getMapAsync(this);
     }
@@ -187,6 +215,7 @@ public class TruSpotMapFragment
 
         // enable my location
         mGoogleMap.setMyLocationEnabled(true);
+
         mGoogleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
             @Override
             public void onMyLocationChange(Location location) {
@@ -194,23 +223,103 @@ public class TruSpotMapFragment
             }
         });
 
-        // TODO : initial zoom to a place where venues are available. Remove it when needed.
+        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                // TODO add func
+
+                return false;
+            }
+
+        });
+
         updateCamera(USA);
 
-        // TODO: this is a test marker. Replace it when venues from db are available.
-        PdmDrawable drawable = new PdmDrawable(getResources().getColor(R.color.pdm_border),
-                getResources().getColor(R.color.accent),
-                Util.convertDpiToPixels(getActivity(), 5));
-        BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(Util.convertToBitmap(drawable,
-                Util.convertDpiToPixels(getActivity(), 50),
-                Util.convertDpiToPixels(getActivity(), 50)));
+        tryLoadVenuesOnMap();
+    }
 
-        MarkerOptions markerOptions = new MarkerOptions().position(USA)
-                .title("Current Location")
-                .snippet("USA")
+    private void tryLoadVenuesOnMap() {
+        if (mGoogleMap != null && mVenues != null && !mVenuesLoaded) {
+            loadVenuesOnMap();
+        }
+    }
+
+    private void loadVenuesOnMap() {
+        final String TAG = Util.stringsToPath(BASIC_TAG, "loadVenuesOnMap");
+
+        LogUtil.log(TAG, "called");
+
+        mVenuesLoaded = true;
+
+        mGoogleMap.clear();
+
+        LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+
+        if (mMarkerVenueMap != null) {
+            mMarkerVenueMap.clear();
+        }
+
+        mMarkerVenueMap = new HashMap<>();
+        int maxCapacity = findMaxCapacity();
+
+        for (VenueFull vf : mVenues) {
+            Venue venue = vf.getVenue();
+
+            Marker marker = addVenueMarker(venue, maxCapacity);
+
+            mMarkerVenueMap.put(marker.getId(), vf);
+
+            boundsBuilder.include(new LatLng(venue.getLat(), venue.getLng()));
+        }
+
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), Util.convertDpiToPixels(getActivity(), 10)));
+    }
+
+    private int findMaxCapacity() {
+        int max = 0;
+
+        for (VenueFull vf : mVenues) {
+            if (vf.getVenue().getCapacity() > max) {
+                max = vf.getVenue().getCapacity();
+            }
+        }
+
+        return max;
+    }
+
+    private Marker addVenueMarker(Venue venue, int maxCapacity) {
+
+        int origColor = Color.parseColor(venue.getPdmColor());
+        int secColor = ColorUtil.adjustAlpha(origColor, 0.25f);
+
+        int sizeDp = (int) (MAX_PDM_SIZE_DP * ((double) venue.getCapacity() / (double) maxCapacity));
+
+        if (sizeDp < MIN_PDM_SIZE_DP) {
+            sizeDp = MIN_PDM_SIZE_DP;
+        }
+
+        int radiusDp = sizeDp / 2;
+        int occupancyRadiusDp = (int) (radiusDp * ((double) venue.getOccupancy() / (double) venue.getCapacity()));
+        int borderWidthDp = radiusDp - occupancyRadiusDp;
+
+        PdmDrawable drawable = new PdmDrawable(secColor,
+                origColor,
+                Util.convertDpiToPixels(getActivity(), borderWidthDp));
+
+        BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(
+                Util.convertToBitmap(
+                        drawable,
+                        Util.convertDpiToPixels(getActivity(), sizeDp),
+                        Util.convertDpiToPixels(getActivity(), sizeDp)));
+
+        MarkerOptions markerOptions = new MarkerOptions()
+                .position(new LatLng(venue.getLat(), venue.getLng()))
+                .title(venue.getName())
+                .snippet(venue.getDescription())
                 .icon(bd);
 
-        Marker mMarker = googleMap.addMarker(markerOptions);
+        return mGoogleMap.addMarker(markerOptions);
     }
 
     private void updateCamera(LatLng location) {
@@ -219,17 +328,5 @@ public class TruSpotMapFragment
                 DEFAULT_CAMERA_ZOOM);
 
         mGoogleMap.moveCamera(cameraUpdate);
-    }
-
-    @Subscribe
-    public void onEvent(VenuesEvent.StartLoading event) {
-        flProgress.setVisibility(View.VISIBLE);
-    }
-
-    @Subscribe
-    public void onEvent(VenuesEvent.CompleteLoading event) {
-        flProgress.setVisibility(View.GONE);
-
-        // TODO add func
     }
 }
