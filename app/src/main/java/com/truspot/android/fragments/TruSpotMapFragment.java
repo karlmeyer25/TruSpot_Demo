@@ -1,15 +1,11 @@
 package com.truspot.android.fragments;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -17,14 +13,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.truspot.android.R;
-import com.truspot.android.ui.PdmPinView;
-
+import com.truspot.android.models.event.VenuesEvent;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -44,10 +37,13 @@ public class TruSpotMapFragment
 
     // variables
     private GoogleMap mGoogleMap;
+    private EventBus mBus;
 
     // UI
-    @Bind(R.id.mv_fragment_truspot)
+    @Bind(R.id.mv_fragment_truspot_map)
     MapView mv;
+    @Bind(R.id.fl_fragment_truspot_map_progress)
+    FrameLayout flProgress;
 
     // get instance methods
     public static TruSpotMapFragment getInstance() {
@@ -59,7 +55,7 @@ public class TruSpotMapFragment
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_truspot, container, false);
+        View view = inflater.inflate(R.layout.fragment_truspot_map, container, false);
 
         ButterKnife.bind(this, view);
 
@@ -77,6 +73,8 @@ public class TruSpotMapFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        initVariables();
 
         getMapAsync();
     }
@@ -126,9 +124,16 @@ public class TruSpotMapFragment
     public void onDestroy() {
         super.onDestroy();
 
+        mBus.unregister(this);
+
         if (mv != null) {
             mv.onDestroy();
         }
+    }
+
+    private void initVariables() {
+        mBus = EventBus.getDefault();
+        mBus.register(this);
     }
 
     private void getMapAsync() {
@@ -151,24 +156,17 @@ public class TruSpotMapFragment
                 DEFAULT_CAMERA_ZOOM);
 
         mGoogleMap.moveCamera(cameraUpdate);
+    }
 
-        /*
-        PdmPinView img = new PdmPinView(getActivity());
-        img.setPadding(20, 20, 20, 20);
-        img.setLayoutParams(new ViewGroup.LayoutParams(200, 200));
+    @Subscribe
+    public void onEvent(VenuesEvent.StartLoading event) {
+        flProgress.setVisibility(View.VISIBLE);
+    }
 
-        Drawable d = img.getDrawable();
-        Bitmap bitmap = Bitmap.createBitmap(d.getIntrinsicWidth(),
-                d.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+    @Subscribe
+    public void onEvent(VenuesEvent.CompleteLoading event) {
+        flProgress.setVisibility(View.GONE);
 
-        BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(bitmap);
-
-        MarkerOptions markerOptions = new MarkerOptions().position(USA)
-                .title("Current Location")
-                .snippet("Thinking of finding some thing...")
-                .icon(bd);
-
-        Marker mMarker = googleMap.addMarker(markerOptions);
-        */
+        // TODO add func
     }
 }

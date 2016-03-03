@@ -17,4 +17,6 @@
     <!-- Borders -->
     <color name="pdm_border">#80FFFFFF</color>
 
+    <!-- Other colors -->
+    <color name="semi_black">#80000000</color>
 </resources>

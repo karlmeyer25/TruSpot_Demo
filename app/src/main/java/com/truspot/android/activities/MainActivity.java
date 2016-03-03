@@ -13,16 +13,15 @@ import com.rey.material.app.SimpleDialog;
 import com.truspot.android.R;
 import com.truspot.android.fragments.NearbyFragment;
 import com.truspot.android.fragments.TruSpotMapFragment;
+import com.truspot.android.models.event.VenuesEvent;
 import com.truspot.android.tasks.GetVenuesFullTask;
 import com.truspot.android.tasks.abstracts.SimpleTask;
 import com.truspot.android.utils.IntentUtil;
 import com.truspot.android.utils.LogUtil;
 import com.truspot.android.utils.Util;
 import com.truspot.backend.api.model.VenueFull;
-
-import java.io.IOException;
+import org.greenrobot.eventbus.EventBus;
 import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -36,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     // variables
     private TabsAdapter mTabsAdapter;
+    private EventBus mBus;
 
     // UI
     @Bind(R.id.toolbar_activity_main)
@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        initVariables();
         setUiSettings();
         setAdapters();
 
@@ -61,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
         } else {
             showNoInternetDialog();
         }
+    }
+
+    private void initVariables() {
+        mBus = EventBus.getDefault();
     }
 
     private void setUiSettings() {
@@ -117,10 +122,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStart() {
                 LogUtil.log(TAG, "onStart");
+
+                mBus.post(new VenuesEvent.StartLoading());
             }
 
             @Override
             public void onComplete(List<VenueFull> res) {
+/*
                 if (res != null) {
                     for (VenueFull vf : res) {
                         try {
@@ -130,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }
+*/
+                mBus.post(new VenuesEvent.CompleteLoading(res));
             }
 
         }).execute();
