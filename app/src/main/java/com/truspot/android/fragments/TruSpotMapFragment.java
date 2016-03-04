@@ -25,6 +25,7 @@ import com.rey.material.widget.FloatingActionButton;
 import com.truspot.android.R;
 import com.truspot.android.activities.SocialItemActivity;
 import com.truspot.android.activities.VenueActivity;
+import com.truspot.android.models.event.LocationEvent;
 import com.truspot.android.models.event.VenuesEvent;
 import com.truspot.android.ui.PdmDrawable;
 import com.truspot.android.utils.ColorUtil;
@@ -222,6 +223,7 @@ public class TruSpotMapFragment
             @Override
             public void onMyLocationChange(Location location) {
                 mCurrLocation = location;
+                mBus.post(new LocationEvent.LocationAvailable(location));
             }
         });
 
