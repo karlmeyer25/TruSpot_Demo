@@ -1,7 +1,6 @@
 package com.truspot.android.fragments;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,19 +14,17 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.rey.material.widget.FloatingActionButton;
 import com.truspot.android.R;
 import com.truspot.android.activities.SocialItemActivity;
 import com.truspot.android.activities.VenueActivity;
+import com.truspot.android.constants.Constants;
+import com.truspot.android.models.event.LocationEvent;
 import com.truspot.android.models.event.VenuesEvent;
-import com.truspot.android.ui.PdmDrawable;
-import com.truspot.android.utils.ColorUtil;
+import com.truspot.android.utils.LocationUtil;
 import com.truspot.android.utils.LogUtil;
 import com.truspot.android.utils.Util;
 import com.truspot.backend.api.model.Venue;
@@ -55,9 +52,6 @@ public class TruSpotMapFragment
     // private constants
     private final static String BUNDLE_KEY_MAP_STATE = "map_data";
     private static final LatLng USA = new LatLng(37.09024, -95.712891);
-    private static final int DEFAULT_CAMERA_ZOOM = 12;
-    private static final int MAX_PDM_SIZE_DP = 30;
-    private static final int MIN_PDM_SIZE_DP = 10;
 
     // variables
     private GoogleMap mGoogleMap;
@@ -222,6 +216,7 @@ public class TruSpotMapFragment
             @Override
             public void onMyLocationChange(Location location) {
                 mCurrLocation = location;
+                mBus.post(new LocationEvent.LocationAvailable(location));
             }
         });
 
@@ -272,7 +267,7 @@ public class TruSpotMapFragment
         for (VenueFull vf : mVenues) {
             Venue venue = vf.getVenue();
 
-            Marker marker = addVenueMarker(venue, maxCapacity);
+            Marker marker = LocationUtil.addVenueMarker(getActivity(), mGoogleMap, venue, maxCapacity);
 
             mMarkerVenueMap.put(marker.getId(), vf);
 
@@ -296,44 +291,10 @@ public class TruSpotMapFragment
         return max;
     }
 
-    private Marker addVenueMarker(Venue venue, int maxCapacity) {
-
-        int origColor = Color.parseColor(venue.getPdmColor());
-        int secColor = ColorUtil.adjustAlpha(origColor, 0.25f);
-
-        int sizeDp = (int) (MAX_PDM_SIZE_DP * ((double) venue.getCapacity() / (double) maxCapacity));
-
-        if (sizeDp < MIN_PDM_SIZE_DP) {
-            sizeDp = MIN_PDM_SIZE_DP;
-        }
-
-        int radiusDp = sizeDp / 2;
-        int occupancyRadiusDp = (int) (radiusDp * ((double) venue.getOccupancy() / (double) venue.getCapacity()));
-        int borderWidthDp = radiusDp - occupancyRadiusDp;
-
-        PdmDrawable drawable = new PdmDrawable(secColor,
-                origColor,
-                Util.convertDpiToPixels(getActivity(), borderWidthDp));
-
-        BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(
-                Util.convertToBitmap(
-                        drawable,
-                        Util.convertDpiToPixels(getActivity(), sizeDp),
-                        Util.convertDpiToPixels(getActivity(), sizeDp)));
-
-        MarkerOptions markerOptions = new MarkerOptions()
-                .position(new LatLng(venue.getLat(), venue.getLng()))
-                .title(venue.getName())
-                .snippet(venue.getDescription())
-                .icon(bd);
-
-        return mGoogleMap.addMarker(markerOptions);
-    }
-
     private void updateCamera(LatLng location) {
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
                 location,
-                DEFAULT_CAMERA_ZOOM);
+                Constants.DEFAULT_CAMERA_ZOOM);
 
         mGoogleMap.moveCamera(cameraUpdate);
     }

@@ -10,9 +10,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import com.rey.material.app.Dialog;
 import com.rey.material.app.SimpleDialog;
+import com.squareup.picasso.Picasso;
 import com.truspot.android.R;
 import com.truspot.android.fragments.NearbyFragment;
 import com.truspot.android.fragments.TruSpotMapFragment;
+import com.truspot.android.interfaces.GotPicasso;
 import com.truspot.android.models.event.VenuesEvent;
 import com.truspot.android.tasks.GetVenuesFullTask;
 import com.truspot.android.tasks.abstracts.SimpleTask;
@@ -25,7 +27,11 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity
+        extends
+            AppCompatActivity
+        implements
+            GotPicasso {
 
     // constants
     public static final String BASIC_TAG = MainActivity.class.getName();
@@ -36,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     // variables
     private TabsAdapter mTabsAdapter;
     private EventBus mBus;
+    private Picasso mPicasso;
 
     // UI
     @Bind(R.id.toolbar_activity_main)
@@ -66,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initVariables() {
         mBus = EventBus.getDefault();
+        mPicasso = Picasso.with(this);
     }
 
     private void setUiSettings() {
@@ -143,6 +151,11 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }).execute();
+    }
+
+    @Override
+    public Picasso getPicasso() {
+        return mPicasso;
     }
 
     // inner classes

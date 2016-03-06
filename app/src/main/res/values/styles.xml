@@ -34,4 +34,20 @@
         <item name="fab_backgroundColor">@color/icons</item>
     </style>
 
+    <!-- styles for ripples -->
+    <style name="ImageBasicRippleStyle">
+        <item name="mrl_rippleOverlay">true</item>
+        <item name="mrl_rippleHover">true</item>
+        <item name="mrl_rippleDuration">300</item>
+    </style>
+
+
+    <style name="ImageLightRippleStyle" parent="ImageBasicRippleStyle">
+        <item name="mrl_rippleColor">#FFFFFF</item>
+    </style>
+
+    <style name="ImageDarkRippleStyle" parent="ImageBasicRippleStyle">
+        <item name="mrl_rippleColor">#000000</item>
+    </style>
+
 </resources>
