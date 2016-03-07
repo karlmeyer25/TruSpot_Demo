@@ -15,6 +15,7 @@ import com.truspot.android.R;
 import com.truspot.android.activities.PlayVideoActivity;
 import com.truspot.android.enums.SocialMediaEnum;
 import com.truspot.android.interfaces.GotPicasso;
+import com.truspot.android.picasso.RoundedTransformation;
 import com.truspot.android.utils.GoogleUtil;
 import com.truspot.android.utils.LogUtil;
 import com.truspot.android.utils.Util;
@@ -45,6 +46,10 @@ public class SocialItemFragment extends Fragment {
     ImageView iv;
     @Bind(R.id.iv_fragment_social_item_play)
     ImageView ivPlay;
+    @Bind(R.id.iv_fragment_social_item_avatar)
+    ImageView ivAvatar;
+    @Bind(R.id.tv_fragment_social_item_user_name)
+    TextView tvUsername;
 
     // get instance methods
     public static SocialItemFragment getInstance(SocialMediaItem socialMediaItem) throws IOException {
@@ -77,6 +82,7 @@ public class SocialItemFragment extends Fragment {
         initArgs();
         initVariables();
         initListeners();
+        loadUsernameDetails();
         loadMediaItem();
     }
 
@@ -122,6 +128,23 @@ public class SocialItemFragment extends Fragment {
                         Util.getYoutubeIdFromUrl(mItem.getVideoUrl())));
             }
         });
+    }
+
+    private void loadUsernameDetails() {
+        tvUsername.setText(Util.isStringNotNull(mItem.getUsername()) ? mItem.getUsername() : "");
+
+        mPicasso.load(mItem.getAvatarUrl())
+                .placeholder(R.drawable.default_avatar)
+                .noFade()
+                .resize(
+                        Util.convertDpiToPixels(getActivity(), 50),
+                        Util.convertDpiToPixels(getActivity(), 50))
+                .centerCrop()
+                .transform(new RoundedTransformation(
+                        Util.convertDpiToPixels(getActivity(), 50) / 2,
+                        0))
+                .config(Bitmap.Config.RGB_565)
+                .into(ivAvatar);
     }
 
     private void loadMediaItem() {
