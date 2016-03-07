@@ -12,4 +12,9 @@ public class Constants {
     public static final JsonFactory JSON_FACTORY = new AndroidJsonFactory();
 
     public static final int DEFAULT_CAMERA_ZOOM = 12;
+
+    // google API key
+    public static final String API_KEY = "AIzaSyAnxc7anZbTNM4Rbv-x1sLKE3yrWrmxgqo";
+
+    public static final int YOUTUBE_ID_LENGTH = 11;
 }

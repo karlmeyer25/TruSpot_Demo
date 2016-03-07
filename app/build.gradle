@@ -20,8 +20,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     // design
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
@@ -32,17 +31,15 @@ dependencies {
     compile 'com.github.fafaldo:fab-toolbar:1.2.0'
     // https://github.com/balysv/material-ripple
     compile 'com.balysv:material-ripple:1.0.2'
-
     // google
     compile 'com.google.android.gms:play-services-maps:8.4.0'
-
     // other
     // https://github.com/JakeWharton/butterknife
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'org.greenrobot:eventbus:3.0.0'
     // http://square.github.io/picasso/
     compile 'com.squareup.picasso:picasso:2.5.2'
-
     // backend
     compile project(path: ':backend', configuration: 'android-endpoints')
+    compile files('libs/YouTubeAndroidPlayerApi.jar')
 }

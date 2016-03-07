@@ -47,13 +47,23 @@
         app:et_dividerHeight="1dp"
         app:et_supportMode="none"
         app:et_labelEnable="true"/>
-    <ImageView
-        android:id="@+id/iv_activity_add_social_item_container"
-        android:layout_below="@id/et_activity_add_social_item"
-        android:layout_centerHorizontal="true"
+    <FrameLayout
         android:layout_width="200dp"
-        android:layout_height="200dp">
-    </ImageView>
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/et_activity_add_social_item">
+        <ImageView
+            android:id="@+id/iv_activity_add_social_item_container"
+            android:layout_width="200dp"
+            android:layout_height="200dp">
+        </ImageView>
+        <ImageView
+            android:id="@+id/iv_activity_add_social_item_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:src="@drawable/ic_video_white_24dp"/>
+    </FrameLayout>
     <com.rey.material.widget.FloatingActionButton
         android:id="@+id/fab_activity_add_social_item_share"
         android:layout_width="wrap_content"

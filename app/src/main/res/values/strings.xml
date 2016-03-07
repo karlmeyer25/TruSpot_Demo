@@ -6,14 +6,19 @@
     <string name="title_social_item">Social Feed</string>
     <string name="title_add_social_item">Add Social Media</string>
     <string name="title_venue">Venue</string>
+    <string name="title_video">Video</string>
 
     <!-- Tabs -->
     <string name="tab_map">Map</string>
     <string name="tab_nearby">Nearby</string>
 
-    <!-- Dialog -->
+    <!-- Dialogs -->
     <string name="dialog_title_warning">Warning</string>
     <string name="dialog_msg_no_internet_turn_it_on">There is no internet connection! Please, turn it on and then open the app again.</string>
     <string name="dialog_btn_go_to_internet_settings">Go to settings</string>
     <string name="dialog_btn_cancel">Cancel</string>
+
+    <!-- Errors -->
+    <string name="error_player">There was an error initializing the YouTubePlayer!</string>
+
 </resources>

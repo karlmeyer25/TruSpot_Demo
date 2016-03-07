@@ -29,6 +29,8 @@ import android.view.Surface;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.truspot.android.constants.Constants;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -381,5 +383,9 @@ public class Util {
         drawable.draw(canvas);
 
         return mutableBitmap;
+    }
+
+    public static String getYoutubeIdFromUrl(String youtubeUrl) {
+        return youtubeUrl.substring(youtubeUrl.length() - Constants.YOUTUBE_ID_LENGTH);
     }
 }
