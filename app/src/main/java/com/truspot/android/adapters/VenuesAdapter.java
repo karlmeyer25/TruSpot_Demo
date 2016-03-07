@@ -106,6 +106,8 @@ public class VenuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 .into(viewHolder.iv);
 
         viewHolder.tvName.setText(item.getVenue().getName());
+        viewHolder.tvDescription.setText(item.getVenue().getDescription() != null
+                ? item.getVenue().getDescription() : "");
     }
 
     // inner classes
@@ -120,6 +122,8 @@ public class VenuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         ImageView iv;
         @Bind(R.id.tv_item_venue_name)
         TextView tvName;
+        @Bind(R.id.tv_item_venue_description)
+        TextView tvDescription;
 
         // constructor
         public VenuesHolder(View itemView) {
