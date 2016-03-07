@@ -163,8 +163,11 @@ public class VenueActivity
         btnShowSocialMedia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent goToSocialItemActivity = SocialItemActivity.getIntent(VenueActivity.this);
-                startActivity(goToSocialItemActivity);
+                try {
+                    startActivity(SocialItemActivity.getIntent(VenueActivity.this, mVf));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

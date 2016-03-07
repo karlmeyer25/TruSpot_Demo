@@ -20,6 +20,10 @@
     <!-- Borders -->
     <color name="pdm_border">#80FF5252</color>
 
+    <!-- Backgrounds -->
+    <color name="bg_social_media_text">#80959b9e</color>
+
     <!-- Other colors -->
     <color name="semi_black">#80000000</color>
+
 </resources>

@@ -42,6 +42,11 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_venue" />
 
+        <activity
+            android:name=".activities.PlayVideoActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_video"/>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAnxc7anZbTNM4Rbv-x1sLKE3yrWrmxgqo"/>

@@ -1,6 +1,5 @@
 package com.truspot.android.fragments;
 
-import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,7 +18,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.rey.material.widget.FloatingActionButton;
 import com.truspot.android.R;
-import com.truspot.android.activities.SocialItemActivity;
 import com.truspot.android.activities.VenueActivity;
 import com.truspot.android.constants.Constants;
 import com.truspot.android.models.event.LocationEvent;
