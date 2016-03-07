@@ -3,8 +3,6 @@ package com.truspot.android.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
@@ -27,8 +25,6 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity {
     private YouTubePlayer mPlayer;
 
     // UI
-    @Bind(R.id.toolbar_activity_play_video)
-    Toolbar toolbar;
     @Bind(R.id.player_activity_play_video)
     YouTubePlayerView playerView;
 
@@ -49,8 +45,6 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity {
         ButterKnife.bind(this);
 
         initExtras();
-        initListeners();
-        setToolbarUiSettings();
         playerView.initialize(Constants.API_KEY, this);
     }
 
@@ -75,19 +69,5 @@ public class PlayVideoActivity extends YouTubeFailureRecoveryActivity {
 
     private void initExtras() {
         mYoutubeUrl = getIntent().getStringExtra(BUNDLE_YOUTUBE_URL);
-    }
-
-    private void initListeners() {
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-    }
-
-    private void setToolbarUiSettings() {
-        //toolbar.setNavigationIcon(getBackArrowDrawable());
-        //toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
     }
 }
