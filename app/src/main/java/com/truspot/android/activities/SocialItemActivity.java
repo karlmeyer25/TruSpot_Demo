@@ -47,6 +47,7 @@ public class SocialItemActivity
 
     private static final int REQUEST_ADD_SOCIAL_ITEM = 1;
     private static final int REQUEST_PICK_IMAGE = 2;
+    private static final int REQUEST_PICK_VIDEO = 3;
 
     // variables
     private VenueFull mVf;
@@ -136,6 +137,18 @@ public class SocialItemActivity
 
             goToAddSocialItemActivity(SocialMediaEnum.PHOTO, realPathFromUri);
         }
+
+        if (requestCode == REQUEST_PICK_VIDEO &&
+                resultCode == RESULT_OK &&
+                data != null &&
+                data.getData() != null) {
+            Uri uri = data.getData();
+            String realPathFromUri = Util.getRealPathFromURI(this, uri);
+
+            LogUtil.log(BASIC_TAG, "Real path " + realPathFromUri);
+
+            goToAddSocialItemActivity(SocialMediaEnum.VIDEO, realPathFromUri);
+        }
     }
 
     private void initExtras() {
@@ -170,6 +183,25 @@ public class SocialItemActivity
 
                 Intent intent = IntentUtil.getPickIntent("image/*");
                 startActivityForResult(intent, REQUEST_PICK_IMAGE);
+            }
+        });
+
+        ivAddVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ftl.hide();
+
+                Intent intent = IntentUtil.getPickIntent("video/*");
+                startActivityForResult(intent, REQUEST_PICK_VIDEO);
+            }
+        });
+
+        ivAddText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ftl.hide();
+
+                goToAddSocialItemActivity(SocialMediaEnum.TEXT, null);
             }
         });
     }

@@ -3,6 +3,7 @@ package com.truspot.android.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -44,6 +45,8 @@ public class AddSocialItemActivity extends AppCompatActivity {
     ImageView ivAvatar;
     @Bind(R.id.iv_activity_add_social_item_container)
     ImageView ivContainer;
+    @Bind(R.id.iv_activity_add_social_item_video)
+    ImageView ivVideo;
 
     // get intent methods
     public static Intent getIntent(Context context,
@@ -67,7 +70,7 @@ public class AddSocialItemActivity extends AppCompatActivity {
         initExtras();
         initVariables();
         initListeners();
-        setToolbarUiSettings();
+        setUiSettings();
         loadUserAvatar();
         loadSocialMedia();
     }
@@ -105,11 +108,21 @@ public class AddSocialItemActivity extends AppCompatActivity {
         });
     }
 
+    private void setUiSettings() {
+        setToolbarUiSettings();
+        setMediaUiSettings();
+    }
+
     private void setToolbarUiSettings() {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void setMediaUiSettings() {
+        ivVideo.setVisibility(mSocialMediaType == SocialMediaEnum.VIDEO ? View.VISIBLE : View.GONE);
+        ivContainer.setVisibility(mSocialMediaType == SocialMediaEnum.TEXT ? View.GONE : View.VISIBLE);
     }
 
     private void loadUserAvatar() {
@@ -128,10 +141,18 @@ public class AddSocialItemActivity extends AppCompatActivity {
     }
 
     private void loadSocialMedia() {
-        mPicasso.load(new File(mSocialMediaPath))
-                .fit()
-                .centerCrop()
-                .config(Bitmap.Config.RGB_565)
-                .into(ivContainer);
+        if (mSocialMediaType == SocialMediaEnum.PHOTO) {
+            mPicasso.load(new File(mSocialMediaPath))
+                    .fit()
+                    .centerCrop()
+                    .config(Bitmap.Config.RGB_565)
+                    .into(ivContainer);
+        } else if (mSocialMediaType == SocialMediaEnum.VIDEO) {
+            MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+
+            mediaMetadataRetriever.setDataSource(mSocialMediaPath);
+            Bitmap bmFrame = mediaMetadataRetriever.getFrameAtTime(5000000);
+            ivContainer.setImageBitmap(bmFrame);
+        }
     }
 }
