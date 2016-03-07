@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -15,6 +17,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
+import com.rey.material.widget.Button;
 import com.truspot.android.R;
 import com.truspot.android.constants.Constants;
 import com.truspot.android.utils.GoogleUtil;
@@ -49,6 +52,12 @@ public class VenueActivity
     Toolbar toolbar;
     @Bind(R.id.mv_activity_venue)
     MapView mv;
+    @Bind(R.id.btn_activity_venue_show_social_media)
+    Button btnShowSocialMedia;
+    @Bind(R.id.tv_activity_venue_name)
+    TextView tvName;
+    @Bind(R.id.tv_activity_venue_description)
+    TextView tvDescription;
 
     // static methods
     public static Intent getIntent(Context context, VenueFull vf) throws IOException {
@@ -68,7 +77,9 @@ public class VenueActivity
         ButterKnife.bind(this);
 
         initExtras();
+        initListeners();
         setToolbarUiSettings();
+        setVenueUiSettings();
         loadMap(savedInstanceState);
     }
 
@@ -148,11 +159,26 @@ public class VenueActivity
         }
     }
 
+    private void initListeners() {
+        btnShowSocialMedia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent goToSocialItemActivity = SocialItemActivity.getIntent(VenueActivity.this);
+                startActivity(goToSocialItemActivity);
+            }
+        });
+    }
+
     private void setToolbarUiSettings() {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void setVenueUiSettings() {
+        tvName.setText(mVf.getVenue().getName());
+        tvDescription.setText(mVf.getVenue().getDescription());
     }
 
     private void loadMap(Bundle savedInstanceState) {

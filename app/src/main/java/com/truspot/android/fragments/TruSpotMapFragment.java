@@ -165,18 +165,12 @@ public class TruSpotMapFragment
         fabMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO : just for testing. Uncomment the lines below when done.
-                Intent goToSocialItemActivity = SocialItemActivity.getIntent(getActivity());
-                startActivity(goToSocialItemActivity);
-
-                /*
                 if (mCurrLocation != null) {
                     LatLng latLng = new LatLng(mCurrLocation.getLatitude(),
                             mCurrLocation.getLongitude());
 
                     updateCamera(latLng);
                 }
-                */
             }
         });
     }
