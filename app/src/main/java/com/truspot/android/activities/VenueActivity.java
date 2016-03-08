@@ -1,13 +1,19 @@
 package com.truspot.android.activities;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -22,6 +28,7 @@ import com.truspot.android.R;
 import com.truspot.android.constants.Constants;
 import com.truspot.android.utils.GoogleUtil;
 import com.truspot.android.utils.LocationUtil;
+import com.truspot.android.utils.Util;
 import com.truspot.backend.api.model.VenueFull;
 
 import java.io.IOException;
@@ -46,12 +53,20 @@ public class VenueActivity
     // variables
     private VenueFull mVf;
     private GoogleMap mGoogleMap;
+    private boolean mIsMapOnFullScreen;
+    private Resources mRes;
+    private int mScreenWidth;
+    private int mScreenHeight;
 
     // UI
     @Bind(R.id.toolbar_activity_venue)
     Toolbar toolbar;
     @Bind(R.id.mv_activity_venue)
     MapView mv;
+    @Bind(R.id.nsv_activity_venue)
+    NestedScrollView nsv;
+    @Bind(R.id.abl_activity_venue)
+    AppBarLayout abl;
     @Bind(R.id.btn_activity_venue_show_social_media)
     Button btnShowSocialMedia;
     @Bind(R.id.tv_activity_venue_name)
@@ -77,6 +92,7 @@ public class VenueActivity
         ButterKnife.bind(this);
 
         initExtras();
+        initVariables();
         initListeners();
         setToolbarUiSettings();
         setVenueUiSettings();
@@ -134,6 +150,15 @@ public class VenueActivity
     }
 
     @Override
+    public void onBackPressed() {
+        if (mIsMapOnFullScreen) {
+            animateMap(false);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home: {
@@ -157,6 +182,13 @@ public class VenueActivity
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void initVariables() {
+        mRes = getResources();
+
+        mScreenWidth = Util.getScreenDimensions(this).x;
+        mScreenHeight = Util.getScreenDimensions(this).y;
     }
 
     private void initListeners() {
@@ -219,6 +251,53 @@ public class VenueActivity
         settings.setMyLocationButtonEnabled(false);
         settings.setZoomControlsEnabled(false);
 
+        mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                if (!mIsMapOnFullScreen) {
+                    animateMap(true);
+                }
+            }
+        });
+
         loadVenueOnMap();
+    }
+
+    private void animateMap(final boolean showOnFullScreen) {
+        float translationY;
+        boolean isPortrait = Util.isPortraitOrientation(mRes);
+
+        if (isPortrait) {
+            translationY = mScreenHeight - Util.convertDpiToPixels(this, 300);
+        } else {
+            translationY = mScreenWidth - Util.convertDpiToPixels(this, 300);
+        }
+
+        nsv.animate().translationYBy(showOnFullScreen ? translationY : -translationY).setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                abl.setLayoutParams(new CoordinatorLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        showOnFullScreen ?
+                                ViewGroup.LayoutParams.MATCH_PARENT :
+                                Util.convertDpiToPixels(VenueActivity.this, 300)));
+                abl.setExpanded(true, true);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mIsMapOnFullScreen = showOnFullScreen;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
     }
 }
