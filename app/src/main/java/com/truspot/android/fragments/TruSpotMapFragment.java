@@ -42,7 +42,8 @@ public class TruSpotMapFragment
         extends
             Fragment
         implements
-            OnMapReadyCallback {
+            OnMapReadyCallback,
+            GoogleMap.OnInfoWindowClickListener {
 
     // public constants
     public static final String BASIC_TAG = TruSpotMapFragment.class.getName();
@@ -212,20 +213,7 @@ public class TruSpotMapFragment
             }
         });
 
-        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                try {
-                    startActivity(VenueActivity.getIntent(getActivity(), mMarkerVenueMap.get(marker.getId())));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                return true;
-            }
-
-        });
+        mGoogleMap.setOnInfoWindowClickListener(this);
 
         updateCamera(USA);
 
@@ -289,5 +277,14 @@ public class TruSpotMapFragment
                 Constants.DEFAULT_CAMERA_ZOOM);
 
         mGoogleMap.moveCamera(cameraUpdate);
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        try {
+            startActivity(VenueActivity.getIntent(getActivity(), mMarkerVenueMap.get(marker.getId())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
