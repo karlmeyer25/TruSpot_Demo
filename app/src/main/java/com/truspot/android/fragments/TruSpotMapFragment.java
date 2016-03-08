@@ -1,12 +1,16 @@
 package com.truspot.android.fragments;
 
 import android.app.Fragment;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
+
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,6 +38,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -67,6 +72,8 @@ public class TruSpotMapFragment
     FrameLayout flProgress;
     @Bind(R.id.fab_fragment_truspot_map_my_location)
     FloatingActionButton fabMyLocation;
+    @Bind(R.id.tv_fragment_truspot_map_place_info)
+    TextView tvPlaceInfo;
 
     // get instance methods
     public static TruSpotMapFragment getInstance() {
@@ -210,6 +217,7 @@ public class TruSpotMapFragment
             public void onMyLocationChange(Location location) {
                 mCurrLocation = location;
                 mBus.post(new LocationEvent.LocationAvailable(location));
+                tvPlaceInfo.setText(getAddressAsString(location.getLatitude(), location.getLongitude()));
             }
         });
 
@@ -277,6 +285,29 @@ public class TruSpotMapFragment
                 Constants.DEFAULT_CAMERA_ZOOM);
 
         mGoogleMap.moveCamera(cameraUpdate);
+    }
+
+    private String getAddressAsString(double latitude, double longitude) {
+        Geocoder geoCoder = new Geocoder(getActivity(), Locale.getDefault());
+        StringBuilder builder = new StringBuilder();
+        try {
+            List<Address> address = geoCoder.getFromLocation(latitude, longitude, 1);
+            int maxLines = address.get(0).getMaxAddressLineIndex();
+            for (int i = 0; i < maxLines; i++) {
+                String addressStr = address.get(0).getAddressLine(i);
+                builder.append(addressStr);
+                builder.append(" ");
+            }
+
+            String finalAddress = builder.toString();
+            tvPlaceInfo.setVisibility(View.VISIBLE);
+
+            return String.format("Your location : %s", finalAddress);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @Override
