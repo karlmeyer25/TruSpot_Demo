@@ -7,6 +7,7 @@
     <string name="title_add_social_item">Add Social Media</string>
     <string name="title_venue">Venue</string>
     <string name="title_video">Video</string>
+    <string name="title_api">Api</string>
 
     <!-- Tabs -->
     <string name="tab_map">Map</string>
@@ -17,6 +18,19 @@
     <string name="dialog_msg_no_internet_turn_it_on">There is no internet connection! Please, turn it on and then open the app again.</string>
     <string name="dialog_btn_go_to_internet_settings">Go to settings</string>
     <string name="dialog_btn_cancel">Cancel</string>
+
+    <!-- Menus -->
+    <string name="menu_edit">Edit</string>
+
+    <!-- Api -->
+    <string-array name="api">
+        <item>Add venue</item>
+        <item>Update venue</item>
+        <item>Delete venue</item>
+        <item>Add social media item</item>
+        <item>Update social media item</item>
+        <item>Delete social media item</item>
+    </string-array>
 
     <!-- Errors -->
     <string name="error_player">There was an error initializing the YouTubePlayer!</string>
