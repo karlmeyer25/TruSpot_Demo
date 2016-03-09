@@ -39,7 +39,6 @@
 
         <activity
             android:name=".activities.VenueActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_venue" />
 
         <activity
