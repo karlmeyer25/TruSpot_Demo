@@ -1,12 +1,16 @@
 package com.truspot.android.activities;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import com.rey.material.app.Dialog;
 import com.rey.material.app.SimpleDialog;
@@ -68,6 +72,30 @@ public class MainActivity
             loadVenues();
         } else {
             showNoInternetDialog();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.menu_edit: {
+                startActivity(ApiActivity.getIntent(this));
+
+                return true;
+            }
+
+            default: {
+                return super.onOptionsItemSelected(item);
+            }
         }
     }
 

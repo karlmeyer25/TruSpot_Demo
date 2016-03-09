@@ -33,12 +33,13 @@
             <com.google.android.gms.maps.MapView
                 android:id="@+id/mv_activity_venue"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="match_parent"
                 android:layout_below="@id/toolbar_activity_venue"
                 app:layout_collapseMode="parallax" />
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nsv_activity_venue"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="-56dp"
