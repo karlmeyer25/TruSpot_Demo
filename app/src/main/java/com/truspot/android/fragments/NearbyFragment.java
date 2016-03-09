@@ -87,6 +87,7 @@ public class NearbyFragment
 
         initVariables();
         setUiSettings();
+        showView(SHOW_PROGRESS_VIEW);
     }
 
     @Override
@@ -104,8 +105,7 @@ public class NearbyFragment
 
     @Subscribe
     public void onEvent(VenuesEvent.StartLoading event) {
-        final String TAG = Util.stringsToPath(BASIC_TAG, "onEvent");
-        LogUtil.log(TAG, "called!");
+        // TODO : this is never called. Analyze why.
     }
 
     @Subscribe
@@ -113,10 +113,7 @@ public class NearbyFragment
         if (mMyLocation != null) {
             updateAdapter(event.getVenues());
         } else {
-            if (mAdapter != null) {
-                mAdapter.clearData(true);
-                mAdapter.addData(event.getVenues(), true);
-            }
+            resetAdapter(event.getVenues());
         }
     }
 
@@ -211,10 +208,20 @@ public class NearbyFragment
 
     private void updateAdapter(List<VenueFull> origList) {
         List<VenueFull> sortedList = getSortedVenuesFullList(origList);
+        resetAdapter(sortedList);
+    }
 
+    private void resetAdapter(List<VenueFull> venueFullList) {
+        showView(SHOW_PROGRESS_VIEW);
         if (mAdapter != null) {
             mAdapter.clearData(true);
-            mAdapter.addData(sortedList, true);
+            mAdapter.addData(venueFullList, true);
+        }
+
+        if (mAdapter != null && mAdapter.getItemCount() > 0) {
+            showView(SHOW_RV);
+        } else {
+            showView(SHOW_EMPTY);
         }
     }
 }

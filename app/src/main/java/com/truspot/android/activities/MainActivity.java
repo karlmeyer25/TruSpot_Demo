@@ -159,6 +159,7 @@ public class MainActivity
             public void onStart() {
                 LogUtil.log(TAG, "onStart");
 
+                // TODO : this event is never posted on its subscribers...
                 mBus.post(new VenuesEvent.StartLoading());
             }
 
