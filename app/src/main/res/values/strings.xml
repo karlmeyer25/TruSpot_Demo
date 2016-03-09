@@ -8,6 +8,7 @@
     <string name="title_venue">Venue</string>
     <string name="title_video">Video</string>
     <string name="title_api">Api</string>
+    <string name="title_edit_venue">Edit Venue</string>
 
     <!-- Tabs -->
     <string name="tab_map">Map</string>
@@ -21,16 +22,7 @@
 
     <!-- Menus -->
     <string name="menu_edit">Edit</string>
-
-    <!-- Api -->
-    <string-array name="api">
-        <item>Add venue</item>
-        <item>Update venue</item>
-        <item>Delete venue</item>
-        <item>Add social media item</item>
-        <item>Update social media item</item>
-        <item>Delete social media item</item>
-    </string-array>
+    <string name="menu_delete">Delete</string>
 
     <!-- Errors -->
     <string name="error_player">There was an error initializing the YouTubePlayer!</string>

@@ -63,4 +63,16 @@
         <item name="android:textSize">16dp</item>
     </style>
 
+    <style name="DefaultButtonRippleStyle" parent="Material.Drawable.Ripple.Touch.Light">
+        <item name="android:background">@drawable/bg_btn_update_venue</item>
+        <item name="rd_rippleColor">#33000000</item>
+        <item name="rd_leftPadding">1dp</item>
+        <item name="rd_topPadding">1dp</item>
+        <item name="rd_rightPadding">1dp</item>
+        <item name="rd_bottomPadding">2dp</item>
+        <item name="rd_delayClick">afterRelease</item>
+        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Button</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+
 </resources>

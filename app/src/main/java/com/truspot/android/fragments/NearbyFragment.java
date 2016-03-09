@@ -150,7 +150,7 @@ public class NearbyFragment
         mBus = EventBus.getDefault();
         mBus.register(this);
 
-        mAdapter = new VenuesAdapter(getActivity(), mPicasso, this);
+        mAdapter = new VenuesAdapter(getActivity(), mPicasso, this, false);
         mLocationsMap = new HashMap<>();
     }
 
