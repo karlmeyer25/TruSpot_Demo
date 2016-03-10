@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.rey.material.widget.Button;
 import com.rey.material.widget.EditText;
@@ -15,7 +16,6 @@ import com.truspot.android.tasks.AddVenueTask;
 import com.truspot.android.tasks.abstracts.SimpleTask;
 import com.truspot.android.tasks.UpdateVenueTask;
 import com.truspot.android.utils.GoogleUtil;
-import com.truspot.android.utils.LogUtil;
 import com.truspot.backend.api.model.Venue;
 import com.truspot.backend.api.model.VenueFull;
 
@@ -31,6 +31,8 @@ public class EditVenueActivity extends AppCompatActivity {
 
     private static final String BUNDLE_IS_ADD = "is_add";
     private static final String BUNDLE_VF = "vf";
+
+    private static final int REQUEST_SOCIAL_MEDIA = 1;
 
     // variables
     private boolean mIsAdd;
@@ -54,6 +56,8 @@ public class EditVenueActivity extends AppCompatActivity {
     EditText etOccupancy;
     @Bind(R.id.et_activity_edit_venue_pdm_color)
     EditText etPdmColor;
+    @Bind(R.id.btn_activity_edit_venue_view_social_media)
+    Button btnViewSocialMedia;
     @Bind(R.id.btn_activity_edit_venue_update)
     Button btnUpdate;
 
@@ -154,6 +158,23 @@ public class EditVenueActivity extends AppCompatActivity {
                 }
             }
         });
+
+        btnViewSocialMedia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mVf != null) {
+                    try {
+                        startActivityForResult(SocialMediaItemsActivity.getIntent(EditVenueActivity.this, mVf), REQUEST_SOCIAL_MEDIA);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(EditVenueActivity.this,
+                            "First create a venue and then you will add/edit/delete social media items!",
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     private void setToolbarUiSettings() {
@@ -173,6 +194,9 @@ public class EditVenueActivity extends AppCompatActivity {
             etOccupancy.setText(String.valueOf(mVf.getVenue().getOccupancy()));
             etPdmColor.setText(mVf.getVenue().getPdmColor());
         }
+
+        btnViewSocialMedia.setText(String.format("View social media (%s)", (mVf != null && mVf.getFeed() != null) ?
+                mVf.getFeed().size() : 0));
     }
 
 }

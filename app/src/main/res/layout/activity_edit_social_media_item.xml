@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_activity_edit_venue"
+        android:id="@+id/toolbar_activity_edit_social_media_item"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -13,7 +13,7 @@
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
     <ScrollView
-        android:layout_below="@id/toolbar_activity_edit_venue"
+        android:layout_below="@id/toolbar_activity_edit_social_media_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fillViewport="false">
@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <com.rey.material.widget.EditText
-                android:id="@+id/et_activity_edit_venue_name"
+                android:id="@+id/et_activity_edit_social_media_item_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_8"
@@ -31,7 +31,7 @@
                 android:layout_marginBottom="@dimen/margin_8"
                 android:inputType="text"
                 android:layout_below="@id/tv_activity_add_social_item_name"
-                android:hint="Name"
+                android:hint="Username"
                 app:et_dividerColor="@color/accent"
                 app:et_labelTextColor="@color/accent"
                 app:et_labelTextSize="@dimen/text_size_4"
@@ -39,14 +39,14 @@
                 app:et_supportMode="none"
                 app:et_labelEnable="true"/>
             <com.rey.material.widget.EditText
-                android:id="@+id/et_activity_edit_venue_description"
+                android:id="@+id/et_activity_edit_social_media_item_avatar_url"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_16"
                 android:layout_marginRight="@dimen/margin_16"
                 android:layout_marginBottom="@dimen/margin_8"
                 android:inputType="text"
-                android:hint="Description"
+                android:hint="Avatar URL"
                 app:et_dividerColor="@color/accent"
                 app:et_labelTextColor="@color/accent"
                 app:et_labelTextSize="@dimen/text_size_4"
@@ -54,14 +54,14 @@
                 app:et_supportMode="none"
                 app:et_labelEnable="true"/>
             <com.rey.material.widget.EditText
-                android:id="@+id/et_activity_edit_venue_lat"
+                android:id="@+id/et_activity_edit_social_media_item_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_16"
                 android:layout_marginRight="@dimen/margin_16"
                 android:layout_marginBottom="@dimen/margin_8"
                 android:inputType="text"
-                android:hint="Lat"
+                android:hint="Social media text"
                 app:et_dividerColor="@color/accent"
                 app:et_labelTextColor="@color/accent"
                 app:et_labelTextSize="@dimen/text_size_4"
@@ -69,14 +69,14 @@
                 app:et_supportMode="none"
                 app:et_labelEnable="true"/>
             <com.rey.material.widget.EditText
-                android:id="@+id/et_activity_edit_venue_lng"
+                android:id="@+id/et_activity_edit_social_media_item_photo_url"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_16"
                 android:layout_marginRight="@dimen/margin_16"
                 android:layout_marginBottom="@dimen/margin_8"
                 android:inputType="text"
-                android:hint="Lng"
+                android:hint="Photo URL"
                 app:et_dividerColor="@color/accent"
                 app:et_labelTextColor="@color/accent"
                 app:et_labelTextSize="@dimen/text_size_4"
@@ -84,44 +84,14 @@
                 app:et_supportMode="none"
                 app:et_labelEnable="true"/>
             <com.rey.material.widget.EditText
-                android:id="@+id/et_activity_edit_venue_capacity"
+                android:id="@+id/et_activity_edit_social_media_item_video_url"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_16"
                 android:layout_marginRight="@dimen/margin_16"
                 android:layout_marginBottom="@dimen/margin_8"
                 android:inputType="text"
-                android:hint="Capacity"
-                app:et_dividerColor="@color/accent"
-                app:et_labelTextColor="@color/accent"
-                app:et_labelTextSize="@dimen/text_size_4"
-                app:et_dividerHeight="1dp"
-                app:et_supportMode="none"
-                app:et_labelEnable="true"/>
-            <com.rey.material.widget.EditText
-                android:id="@+id/et_activity_edit_venue_occupancy"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_16"
-                android:layout_marginRight="@dimen/margin_16"
-                android:layout_marginBottom="@dimen/margin_8"
-                android:inputType="text"
-                android:hint="Occupancy"
-                app:et_dividerColor="@color/accent"
-                app:et_labelTextColor="@color/accent"
-                app:et_labelTextSize="@dimen/text_size_4"
-                app:et_dividerHeight="1dp"
-                app:et_supportMode="none"
-                app:et_labelEnable="true"/>
-            <com.rey.material.widget.EditText
-                android:id="@+id/et_activity_edit_venue_pdm_color"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_16"
-                android:layout_marginRight="@dimen/margin_16"
-                android:layout_marginBottom="@dimen/margin_8"
-                android:inputType="text"
-                android:hint="Pdm color (with #)"
+                android:hint="Video URL"
                 app:et_dividerColor="@color/accent"
                 app:et_labelTextColor="@color/accent"
                 app:et_labelTextSize="@dimen/text_size_4"
@@ -129,24 +99,14 @@
                 app:et_supportMode="none"
                 app:et_labelEnable="true"/>
             <com.rey.material.widget.Button
-                android:id="@+id/btn_activity_edit_venue_view_social_media"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/padding_8"
-                android:layout_marginTop="@dimen/margin_8"
-                android:layout_gravity="center_horizontal"
-                android:textColor="@android:color/white"
-                app:rd_enable="true"
-                style="@style/DefaultButtonRippleStyle" />
-            <com.rey.material.widget.Button
-                android:id="@+id/btn_activity_edit_venue_update"
+                android:id="@+id/btn_activity_edit_social_media_item_update"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding_8"
                 android:layout_marginTop="@dimen/margin_4"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@android:color/white"
-                android:text="Add/Update venue"
+                android:text="Add/Update social media item"
                 app:rd_enable="true"
                 style="@style/DefaultButtonRippleStyle" />
         </LinearLayout>

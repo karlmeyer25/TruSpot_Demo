@@ -9,6 +9,8 @@
     <string name="title_video">Video</string>
     <string name="title_api">Api</string>
     <string name="title_edit_venue">Edit Venue</string>
+    <string name="title_social_media_items">Social Media Items</string>
+    <string name="title_edit_social_media_item">Edit Social Media Item</string>
 
     <!-- Tabs -->
     <string name="tab_map">Map</string>
