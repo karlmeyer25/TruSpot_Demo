@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_activity_api"
+        android:id="@+id/toolbar_activity_social_media_items"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -13,14 +13,14 @@
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_activity_api"
-        android:layout_below="@id/toolbar_activity_api"
+        android:id="@+id/rv_activity_social_media_items"
+        android:layout_below="@id/toolbar_activity_social_media_items"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false">
     </android.support.v7.widget.RecyclerView>
     <com.rey.material.widget.ProgressView
-        android:id="@+id/pv_activity_api"
+        android:id="@+id/pv_activity_social_media_items"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_centerInParent="true"
@@ -30,17 +30,17 @@
         app:pv_progressMode="indeterminate"
         android:visibility="gone"/>
     <TextView
-        android:id="@+id/tv_activity_api_empty"
+        android:id="@+id/tv_activity_social_media_items_empty"
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="No venues available!"
+        android:text="No social media available!"
         android:layout_centerInParent="true"
         android:textColor="@color/primary_text"
         android:textSize="@dimen/text_size_5"/>
     <com.rey.material.widget.FloatingActionButton
-        android:id="@+id/fab_activity_api"
+        android:id="@+id/fab_activity_social_media_items"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_8"

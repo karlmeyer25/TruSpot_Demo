@@ -39,7 +39,6 @@
 
         <activity
             android:name=".activities.VenueActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_venue" />
 
         <activity
@@ -51,6 +50,21 @@
             android:name=".activities.ApiActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_api"/>
+
+        <activity
+            android:name=".activities.EditVenueActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_edit_venue"/>
+
+        <activity
+            android:name=".activities.SocialMediaItemsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_social_media_items"/>
+
+        <activity
+            android:name=".activities.EditSocialMediaItemActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_edit_social_media_item"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

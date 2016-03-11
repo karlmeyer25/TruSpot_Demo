@@ -15,81 +15,85 @@ import android.widget.Toast;
 import com.rey.material.widget.FloatingActionButton;
 import com.rey.material.widget.ProgressView;
 import com.truspot.android.R;
-import com.truspot.android.adapters.VenuesAdapter;
+import com.truspot.android.adapters.SocialMediaAdapter;
 import com.truspot.android.constants.Constants;
-import com.truspot.android.tasks.AddVenueTask;
-import com.truspot.android.tasks.DeleteVenueTask;
-import com.truspot.android.tasks.GetVenuesFullTask;
+import com.truspot.android.tasks.DeleteSocialMediaItemTask;
 import com.truspot.android.tasks.abstracts.SimpleTask;
 import com.truspot.android.ui.DividerItemDecoration;
-import com.truspot.android.utils.LogUtil;
-import com.truspot.android.utils.Util;
-import com.truspot.backend.api.model.Venue;
+import com.truspot.android.utils.GoogleUtil;
+import com.truspot.backend.api.model.SocialMediaItem;
 import com.truspot.backend.api.model.VenueFull;
 
 import java.io.IOException;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ApiActivity extends AppCompatActivity {
+public class SocialMediaItemsActivity extends AppCompatActivity {
 
     // constants
-    public static final String BASIC_TAG = ApiActivity.class.getName();
+    public static final String BASIC_TAG = SocialMediaItemsActivity.class.getName();
 
     private static final int SHOW_RV = 1;
     private static final int SHOW_PROGRESS_VIEW = 2;
     private static final int SHOW_EMPTY = 3;
 
-    private static final int REQUEST_ADD_VENUE = 1;
-    private static final int REQUEST_EDIT_VENUE = 2;
+    private static final int REQUEST_ADD_SOCIAL_MEDIA = 1;
+    private static final int REQUEST_EDIT_SOCIAL_MEDIA = 2;
+
+    private static final String BUNDLE_VF = "vf";
 
     // variables
-    private VenuesAdapter mAdapter;
+    private VenueFull mVf;
+    private SocialMediaAdapter mAdapter;
 
     // UI
-    @Bind(R.id.toolbar_activity_api)
+    @Bind(R.id.toolbar_activity_social_media_items)
     Toolbar toolbar;
-    @Bind(R.id.rv_activity_api)
+    @Bind(R.id.rv_activity_social_media_items)
     RecyclerView rv;
-    @Bind(R.id.pv_activity_api)
+    @Bind(R.id.pv_activity_social_media_items)
     ProgressView pv;
-    @Bind(R.id.tv_activity_api_empty)
+    @Bind(R.id.tv_activity_social_media_items_empty)
     TextView tvEmpty;
-    @Bind(R.id.fab_activity_api)
+    @Bind(R.id.fab_activity_social_media_items)
     FloatingActionButton fab;
 
     // get intent methods
-    public static Intent getIntent(Context context) {
-        return new Intent(context, ApiActivity.class);
+    public static Intent getIntent(Context context, VenueFull vf) throws IOException {
+        Intent i = new Intent(context, SocialMediaItemsActivity.class);
+        i.putExtra(BUNDLE_VF, GoogleUtil.objectToJsonString(vf));
+
+        return i;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_api);
+        setContentView(R.layout.activity_social_media_items);
 
         ButterKnife.bind(this);
 
+        initExtras();
         initVariables();
         initListeners();
         setToolbarUiSettings();
-        loadVenues();
+        loadSocialMedia();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if ((requestCode == REQUEST_ADD_VENUE || requestCode == REQUEST_EDIT_VENUE) &&
+        if ((requestCode == REQUEST_ADD_SOCIAL_MEDIA || requestCode == REQUEST_EDIT_SOCIAL_MEDIA) &&
                 resultCode == RESULT_OK) {
-            Toast.makeText(ApiActivity.this,
-                    requestCode == REQUEST_ADD_VENUE ?
-                            "Venue successfully added!" : "Venue successfully updated!",
+            Toast.makeText(SocialMediaItemsActivity.this,
+                    requestCode == REQUEST_ADD_SOCIAL_MEDIA ?
+                            "Social media successfully added! Restart application to see the changes!" :
+                            "Social media successfully updated! Restart application to see the changes!",
                     Toast.LENGTH_LONG).show();
 
-            loadVenues();
+            loadSocialMedia();
         }
     }
 
@@ -112,22 +116,23 @@ public class ApiActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case Constants.MENU_EDIT:
                 try {
-                    startActivityForResult(EditVenueActivity.getIntent(ApiActivity.this,
-                            false, mAdapter.getItem(mAdapter.getPosition())), REQUEST_EDIT_VENUE);
+                    startActivityForResult(EditSocialMediaItemActivity.getIntent(SocialMediaItemsActivity.this,
+                            false, mVf.getVenue().getId(), mAdapter.getItem(mAdapter.getPosition())),
+                            REQUEST_EDIT_SOCIAL_MEDIA);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
                 break;
             case Constants.MENU_DELETE:
-                new DeleteVenueTask(new SimpleTask.SimpleCallback<Venue>() {
+                new DeleteSocialMediaItemTask(new SimpleTask.SimpleCallback<SocialMediaItem>() {
                     @Override
                     public void onStart() {
                         showView(SHOW_PROGRESS_VIEW);
                     }
 
                     @Override
-                    public void onComplete(Venue res) {
+                    public void onComplete(SocialMediaItem res) {
                         mAdapter.removeItem(mAdapter.getPosition(), true);
 
                         if (mAdapter.getItemCount() > 0) {
@@ -137,7 +142,8 @@ public class ApiActivity extends AppCompatActivity {
                         }
                     }
 
-                }, mAdapter.getItem(mAdapter.getPosition()).getVenue().getId()).execute();
+                }, mVf.getVenue().getId(),
+                        mAdapter.getItem(mAdapter.getPosition()).getId()).execute();
 
                 break;
         }
@@ -145,8 +151,16 @@ public class ApiActivity extends AppCompatActivity {
         return super.onContextItemSelected(item);
     }
 
+    private void initExtras() {
+        try {
+            mVf = GoogleUtil.jsonToObject(VenueFull.class, getIntent().getStringExtra(BUNDLE_VF));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void initVariables() {
-        mAdapter = new VenuesAdapter(this, null, null, true);
+        mAdapter = new SocialMediaAdapter(this);
     }
 
     private void initListeners() {
@@ -154,8 +168,8 @@ public class ApiActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    startActivityForResult(EditVenueActivity.getIntent(ApiActivity.this, true, null),
-                            REQUEST_ADD_VENUE);
+                    startActivityForResult(EditSocialMediaItemActivity.getIntent(SocialMediaItemsActivity.this,
+                            true, mVf.getVenue().getId(), null), REQUEST_ADD_SOCIAL_MEDIA);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -184,38 +198,18 @@ public class ApiActivity extends AppCompatActivity {
         }
     }
 
-    private void loadVenues() {
-        final String TAG = Util.stringsToPath(BASIC_TAG, "loadVenues");
-
-        new GetVenuesFullTask(new SimpleTask.SimpleCallback<List<VenueFull>>() {
-
-            @Override
-            public void onStart() {
-                showView(SHOW_PROGRESS_VIEW);
+    private void loadSocialMedia() {
+        if (mVf != null) {
+            if (mAdapter.getItemCount() > 0) {
+                mAdapter.clearData(true);
             }
 
-            @Override
-            public void onComplete(List<VenueFull> res) {
-
-                if (res != null) {
-                    for (VenueFull vf : res) {
-                        try {
-                            LogUtil.log(TAG, vf.toPrettyString());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-                if (mAdapter.getItemCount() > 0) {
-                    mAdapter.clearData(true);
-                }
-
-                mAdapter.addData(res, true);
-                setupRecyclerView();
+            if (mVf.getFeed() != null) {
+                mAdapter.addData(mVf.getFeed(), true);
             }
 
-        }).execute();
+            setupRecyclerView();
+        }
     }
 
     private void showView(int viewId) {

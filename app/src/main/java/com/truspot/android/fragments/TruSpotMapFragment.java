@@ -107,6 +107,7 @@ public class TruSpotMapFragment
 
         initVariables();
         initListeners();
+        showProgress();
         getMapAsync();
     }
 
@@ -185,7 +186,7 @@ public class TruSpotMapFragment
     public void onEvent(VenuesEvent.StartLoading event) {
         LogUtil.log(BASIC_TAG, "start loading");
 
-        flProgress.setVisibility(View.VISIBLE);
+        // TODO : not called
     }
 
     @Subscribe
@@ -193,6 +194,10 @@ public class TruSpotMapFragment
         mVenues = event.getVenues();
 
         tryLoadVenuesOnMap();
+    }
+
+    private void showProgress() {
+        flProgress.setVisibility(View.VISIBLE);
     }
 
     private void getMapAsync() {
