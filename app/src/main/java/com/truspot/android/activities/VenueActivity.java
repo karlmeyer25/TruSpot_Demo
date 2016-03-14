@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -209,7 +210,13 @@ public class VenueActivity
             @Override
             public void onClick(View v) {
                 try {
-                    startActivity(SocialItemActivity.getIntent(VenueActivity.this, mVf));
+                    if (mVf != null && mVf.getFeed() != null && mVf.getFeed().size() > 0) {
+                        startActivity(SocialItemActivity.getIntent(VenueActivity.this, mVf));
+                    } else {
+                        Toast.makeText(VenueActivity.this,
+                                "No social media added for this venue!",
+                                Toast.LENGTH_LONG).show();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
