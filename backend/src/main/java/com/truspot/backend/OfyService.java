@@ -3,6 +3,7 @@ package com.truspot.backend;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
+import com.truspot.backend.entity.MapSettings;
 import com.truspot.backend.entity.SocialMediaItem;
 import com.truspot.backend.entity.Venue;
 
@@ -16,6 +17,7 @@ public class OfyService {
     static {
         ObjectifyService.register(Venue.class);
         ObjectifyService.register(SocialMediaItem.class);
+        ObjectifyService.register(MapSettings.class);
     }
 
     public static Objectify ofy() {
