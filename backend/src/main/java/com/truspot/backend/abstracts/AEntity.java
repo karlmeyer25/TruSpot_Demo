@@ -33,6 +33,14 @@ public abstract class AEntity<T> implements Identifiable, Validateable {
         return ofy().load().type(clazz).ancestor(parent).keys().list();
     }
 
+    public static <T> T findFirst(Class<T> clazz) {
+        return ofy().load().type(clazz).first().now();
+    }
+
+    public static <T> T findFirstSafe(Class<T> clazz) {
+        return ofy().load().type(clazz).first().safe();
+    }
+
     public static <T> List<T> findByParent(Class<T> clazz, Key parent) {
         return ofy().load().type(clazz).ancestor(parent).list();
     }

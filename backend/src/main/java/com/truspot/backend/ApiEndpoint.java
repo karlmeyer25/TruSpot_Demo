@@ -9,6 +9,7 @@ package com.truspot.backend;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
+import com.truspot.backend.entity.MapSettings;
 import com.truspot.backend.entity.SocialMediaItem;
 import com.truspot.backend.entity.Venue;
 import com.truspot.backend.entity.VenueFull;
@@ -143,5 +144,23 @@ public class ApiEndpoint {
         }
 
         return null;
+    }
+
+    @ApiMethod(name = "getMapSettings", path = "mapsettings/", httpMethod = ApiMethod.HttpMethod.GET)
+    public MapSettings getMapSettings() {
+        return MapSettings.findFirstSafe();
+    }
+
+    @ApiMethod(name = "updateMapSettings", path = "mapsettings/", httpMethod = ApiMethod.HttpMethod.PUT)
+    public MapSettings updateMapSettings(MapSettings mapSettings) throws Exception {
+        MapSettings old = MapSettings.findFirst();
+
+        if (old != null) {
+            mapSettings.setId(old.getId());
+        }
+
+        mapSettings.save();
+
+        return mapSettings;
     }
 }
