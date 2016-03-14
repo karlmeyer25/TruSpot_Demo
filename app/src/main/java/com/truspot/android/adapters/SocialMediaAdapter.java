@@ -108,6 +108,7 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         ApiHolder viewHolder = (ApiHolder) holder;
         SocialMediaItem item = mData.get(position);
 
+        /*
         viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -115,6 +116,7 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 return false;
             }
         });
+        */
 
         viewHolder.tv.setText(String.valueOf(item.getId()));
     }

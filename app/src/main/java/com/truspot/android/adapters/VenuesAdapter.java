@@ -165,6 +165,7 @@ public class VenuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             case ITEM_API_VENUE: {
                 ApiHolder viewHolder = (ApiHolder) holder;
 
+                /*
                 viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
@@ -172,6 +173,7 @@ public class VenuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         return false;
                     }
                 });
+                */
 
                 viewHolder.tv.setText(item.getVenue().getName());
             }
