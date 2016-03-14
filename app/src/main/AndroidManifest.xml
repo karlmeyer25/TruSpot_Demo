@@ -49,9 +49,19 @@
             android:label="@string/title_video"/>
 
         <activity
-            android:name=".activities.ApiActivity"
+            android:name=".activities.ApiMainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/title_api"/>
+            android:label="@string/title_api_main"/>
+
+        <activity
+            android:name=".activities.ApiVenuesActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_api_venues"/>
+
+        <activity
+            android:name=".activities.ApiMapSettingsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_api_map_settings"/>
 
         <activity
             android:name=".activities.EditVenueActivity"

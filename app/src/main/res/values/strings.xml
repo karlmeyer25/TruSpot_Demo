@@ -7,7 +7,9 @@
     <string name="title_add_social_item">Add Social Media</string>
     <string name="title_venue">Venue</string>
     <string name="title_video">Video</string>
-    <string name="title_api">Api</string>
+    <string name="title_api_main">API options</string>
+    <string name="title_api_venues">API - Venues</string>
+    <string name="title_api_map_settings">API - Map settings</string>
     <string name="title_edit_venue">Edit Venue</string>
     <string name="title_social_media_items">Social Media Items</string>
     <string name="title_edit_social_media_item">Edit Social Media Item</string>
@@ -29,5 +31,9 @@
 
     <!-- Errors -->
     <string name="error_player">There was an error initializing the YouTubePlayer!</string>
+    <string name="error_cant_update_map_settings">Can\'t update map settings!</string>
 
+    <!-- Toasts -->
+    <string name="toast_no_internet_connection">No internet connection!</string>
+    <string name="toast_map_settings_updated">Map settings updated!</string>
 </resources>

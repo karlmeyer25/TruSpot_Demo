@@ -17,7 +17,6 @@ import com.rey.material.widget.ProgressView;
 import com.truspot.android.R;
 import com.truspot.android.adapters.VenuesAdapter;
 import com.truspot.android.constants.Constants;
-import com.truspot.android.tasks.AddVenueTask;
 import com.truspot.android.tasks.DeleteVenueTask;
 import com.truspot.android.tasks.GetVenuesFullTask;
 import com.truspot.android.tasks.abstracts.SimpleTask;
@@ -33,10 +32,10 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ApiActivity extends AppCompatActivity {
+public class ApiVenuesActivity extends AppCompatActivity {
 
     // constants
-    public static final String BASIC_TAG = ApiActivity.class.getName();
+    public static final String BASIC_TAG = ApiVenuesActivity.class.getName();
 
     private static final int SHOW_RV = 1;
     private static final int SHOW_PROGRESS_VIEW = 2;
@@ -62,13 +61,13 @@ public class ApiActivity extends AppCompatActivity {
 
     // get intent methods
     public static Intent getIntent(Context context) {
-        return new Intent(context, ApiActivity.class);
+        return new Intent(context, ApiVenuesActivity.class);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_api);
+        setContentView(R.layout.activity_api_venues);
 
         ButterKnife.bind(this);
 
@@ -84,7 +83,7 @@ public class ApiActivity extends AppCompatActivity {
 
         if ((requestCode == REQUEST_ADD_VENUE || requestCode == REQUEST_EDIT_VENUE) &&
                 resultCode == RESULT_OK) {
-            Toast.makeText(ApiActivity.this,
+            Toast.makeText(ApiVenuesActivity.this,
                     requestCode == REQUEST_ADD_VENUE ?
                             "Venue successfully added!" : "Venue successfully updated!",
                     Toast.LENGTH_LONG).show();
@@ -112,7 +111,7 @@ public class ApiActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case Constants.MENU_EDIT:
                 try {
-                    startActivityForResult(EditVenueActivity.getIntent(ApiActivity.this,
+                    startActivityForResult(EditVenueActivity.getIntent(ApiVenuesActivity.this,
                             false, mAdapter.getItem(mAdapter.getPosition())), REQUEST_EDIT_VENUE);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -154,7 +153,7 @@ public class ApiActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    startActivityForResult(EditVenueActivity.getIntent(ApiActivity.this, true, null),
+                    startActivityForResult(EditVenueActivity.getIntent(ApiVenuesActivity.this, true, null),
                             REQUEST_ADD_VENUE);
                 } catch (IOException e) {
                     e.printStackTrace();

@@ -108,7 +108,7 @@ public class MainActivity
         switch (item.getItemId()) {
 
             case R.id.menu_edit: {
-                startActivity(ApiActivity.getIntent(this));
+                startActivity(ApiMainActivity.getIntent(this));
 
                 return true;
             }
