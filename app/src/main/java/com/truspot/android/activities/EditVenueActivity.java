@@ -170,7 +170,7 @@ public class EditVenueActivity extends AppCompatActivity {
                     }
                 } else {
                     Toast.makeText(EditVenueActivity.this,
-                            "First create a venue and then you will add/edit/delete social media items!",
+                            "First create a venue and then you will be able to add/edit/delete social media items!",
                             Toast.LENGTH_LONG).show();
                 }
             }
