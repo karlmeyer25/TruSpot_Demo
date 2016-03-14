@@ -1,21 +1,27 @@
 package com.truspot.android.activities;
 
 import android.app.Fragment;
-import android.content.Intent;
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.TextView;
+
 import com.rey.material.app.Dialog;
 import com.rey.material.app.SimpleDialog;
 import com.squareup.picasso.Picasso;
 import com.truspot.android.R;
+import com.truspot.android.adapters.SuggestionAdapter;
 import com.truspot.android.fragments.NearbyFragment;
 import com.truspot.android.fragments.TruSpotMapFragment;
 import com.truspot.android.interfaces.GotPicasso;
@@ -27,6 +33,9 @@ import com.truspot.android.utils.LogUtil;
 import com.truspot.android.utils.Util;
 import com.truspot.backend.api.model.VenueFull;
 import org.greenrobot.eventbus.EventBus;
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -45,10 +54,16 @@ public class MainActivity
 
     // variables
     private TabsAdapter mTabsAdapter;
+    private SuggestionAdapter mSuggestionAdapter;
     private EventBus mBus;
     private Picasso mPicasso;
+    private SearchManager mSearchManager;
+    private List<VenueFull> mVenuesList;
 
     // UI
+    private SearchView searchView;
+    private SearchView.SearchAutoComplete searchAutoCompleteView;
+
     @Bind(R.id.toolbar_activity_main)
     Toolbar toolbar;
     @Bind(R.id.tl_activity_main)
@@ -80,6 +95,11 @@ public class MainActivity
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
 
+        MenuItem searchItem = menu.findItem(R.id.menu_search);
+
+        searchView = (SearchView) searchItem.getActionView();
+        searchView.setSearchableInfo(mSearchManager.getSearchableInfo(MainActivity.this.getComponentName()));
+
         return true;
     }
 
@@ -102,6 +122,7 @@ public class MainActivity
     private void initVariables() {
         mBus = EventBus.getDefault();
         mPicasso = Picasso.with(this);
+        mSearchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
     }
 
     private void setUiSettings() {
@@ -138,13 +159,13 @@ public class MainActivity
             }
 
         }).negativeActionClickListener(new View.OnClickListener() {
+                                                         @Override
+                                                         public void onClick(View v) {
+                                                             dialog.dismiss();
 
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-
-                finish();
-            }}
+                                                             finish();
+                                                         }
+                                                     }
         );
 
         dialog.show();
@@ -165,21 +186,61 @@ public class MainActivity
 
             @Override
             public void onComplete(List<VenueFull> res) {
-/*
-                if (res != null) {
-                    for (VenueFull vf : res) {
+                mBus.post(new VenuesEvent.CompleteLoading(res));
+
+                mVenuesList = res;
+
+                mSuggestionAdapter = new SuggestionAdapter(MainActivity.this,
+                        R.layout.item_search,
+                        getVenueNames(res));
+
+                initSearchAutocompleteView();
+            }
+
+        }).execute();
+    }
+
+    private void initSearchAutocompleteView() {
+        searchAutoCompleteView = (SearchView.SearchAutoComplete)
+                searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchAutoCompleteView.setThreshold(1);
+        searchAutoCompleteView.setAdapter(mSuggestionAdapter);
+
+        searchAutoCompleteView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (view instanceof TextView) {
+                    VenueFull venueFull = findVenueByName(((TextView) view).getText().toString());
+                    if (venueFull != null) {
                         try {
-                            LogUtil.log(TAG, vf.toPrettyString());
+                            startActivity(VenueActivity.getIntent(MainActivity.this, venueFull));
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
                 }
-*/
-                mBus.post(new VenuesEvent.CompleteLoading(res));
             }
+        });
+    }
 
-        }).execute();
+    private ArrayList<String> getVenueNames(List<VenueFull> venueFullList) {
+        ArrayList<String> venueNames = new ArrayList<>();
+
+        for (VenueFull venue : venueFullList) {
+            venueNames.add(venue.getVenue().getName());
+        }
+
+        return venueNames;
+    }
+
+    private VenueFull findVenueByName(String name) {
+        for (VenueFull venue : mVenuesList) {
+            if (name.toLowerCase().equals(venue.getVenue().getName().toLowerCase())) {
+                return venue;
+            }
+        }
+
+        return null;
     }
 
     @Override

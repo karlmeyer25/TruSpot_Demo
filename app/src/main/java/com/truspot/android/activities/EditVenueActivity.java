@@ -7,10 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.rey.material.widget.Button;
 import com.rey.material.widget.EditText;
+import com.rey.material.widget.ProgressView;
 import com.truspot.android.R;
 import com.truspot.android.tasks.AddVenueTask;
 import com.truspot.android.tasks.abstracts.SimpleTask;
@@ -34,6 +36,9 @@ public class EditVenueActivity extends AppCompatActivity {
 
     private static final int REQUEST_SOCIAL_MEDIA = 1;
 
+    private static final int SHOW_CONTENT = 1;
+    private static final int SHOW_PROGRESS_VIEW = 2;
+
     // variables
     private boolean mIsAdd;
     private VenueFull mVf;
@@ -42,6 +47,10 @@ public class EditVenueActivity extends AppCompatActivity {
     // UI
     @Bind(R.id.toolbar_activity_edit_venue)
     Toolbar toolbar;
+    @Bind(R.id.sv_activity_edit_venue)
+    ScrollView sv;
+    @Bind(R.id.pv_activity_edit_venue)
+    ProgressView pv;
     @Bind(R.id.et_activity_edit_venue_name)
     EditText etName;
     @Bind(R.id.et_activity_edit_venue_description)
@@ -131,11 +140,12 @@ public class EditVenueActivity extends AppCompatActivity {
                     new UpdateVenueTask(new SimpleTask.SimpleCallback<Venue>() {
                         @Override
                         public void onStart() {
-                            // do nothing
+                            showView(SHOW_PROGRESS_VIEW);
                         }
 
                         @Override
                         public void onComplete(Venue res) {
+                            showView(SHOW_CONTENT);
                             setResult(RESULT_OK);
                             finish();
                         }
@@ -145,11 +155,12 @@ public class EditVenueActivity extends AppCompatActivity {
                     new AddVenueTask(new SimpleTask.SimpleCallback<Venue>() {
                         @Override
                         public void onStart() {
-                            // do nothing
+                            showView(SHOW_PROGRESS_VIEW);
                         }
 
                         @Override
                         public void onComplete(Venue res) {
+                            showView(SHOW_CONTENT);
                             setResult(RESULT_OK);
                             finish();
                         }
@@ -170,7 +181,7 @@ public class EditVenueActivity extends AppCompatActivity {
                     }
                 } else {
                     Toast.makeText(EditVenueActivity.this,
-                            "First create a venue and then you will add/edit/delete social media items!",
+                            "First create a venue and then you will be able to add/edit/delete social media items!",
                             Toast.LENGTH_LONG).show();
                 }
             }
@@ -197,6 +208,11 @@ public class EditVenueActivity extends AppCompatActivity {
 
         btnViewSocialMedia.setText(String.format("View social media (%s)", (mVf != null && mVf.getFeed() != null) ?
                 mVf.getFeed().size() : 0));
+    }
+
+    private void showView(int viewId) {
+        pv.setVisibility(viewId == SHOW_PROGRESS_VIEW ? View.VISIBLE : View.GONE);
+        sv.setVisibility(viewId == SHOW_CONTENT ? View.VISIBLE : View.GONE);
     }
 
 }

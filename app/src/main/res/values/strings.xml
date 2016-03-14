@@ -25,6 +25,7 @@
     <!-- Menus -->
     <string name="menu_edit">Edit</string>
     <string name="menu_delete">Delete</string>
+    <string name="menu_search">Search venues</string>
 
     <!-- Errors -->
     <string name="error_player">There was an error initializing the YouTubePlayer!</string>

@@ -7,21 +7,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.ScrollView;
 
 import com.rey.material.widget.Button;
 import com.rey.material.widget.EditText;
+import com.rey.material.widget.ProgressView;
 import com.truspot.android.R;
 import com.truspot.android.tasks.AddSocialMediaItemTask;
-import com.truspot.android.tasks.AddVenueTask;
 import com.truspot.android.tasks.UpdateSocialMediaItemTask;
-import com.truspot.android.tasks.UpdateVenueTask;
 import com.truspot.android.tasks.abstracts.SimpleTask;
 import com.truspot.android.utils.GoogleUtil;
-import com.truspot.android.utils.LogUtil;
 import com.truspot.backend.api.model.SocialMediaItem;
-import com.truspot.backend.api.model.Venue;
-import com.truspot.backend.api.model.VenueFull;
 
 import java.io.IOException;
 
@@ -37,6 +33,9 @@ public class EditSocialMediaItemActivity extends AppCompatActivity {
     private static final String BUNDLE_VENUE_ID = "venue_id";
     private static final String BUNDLE_SOCIAL_MEDIA_ITEM = "social_media_item";
 
+    private static final int SHOW_CONTENT = 1;
+    private static final int SHOW_PROGRESS_VIEW = 2;
+
     // variables
     private boolean mIsAdd;
     private Long mVenueId;
@@ -45,6 +44,10 @@ public class EditSocialMediaItemActivity extends AppCompatActivity {
     // UI
     @Bind(R.id.toolbar_activity_edit_social_media_item)
     Toolbar toolbar;
+    @Bind(R.id.sv_activity_edit_social_media_item)
+    ScrollView sv;
+    @Bind(R.id.pv_activity_edit_social_media_item)
+    ProgressView pv;
     @Bind(R.id.et_activity_edit_social_media_item_username)
     EditText etUsername;
     @Bind(R.id.et_activity_edit_social_media_item_avatar_url)
@@ -133,12 +136,12 @@ public class EditSocialMediaItemActivity extends AppCompatActivity {
                     new UpdateSocialMediaItemTask(new SimpleTask.SimpleCallback<SocialMediaItem>() {
                         @Override
                         public void onStart() {
-                            // do nothing
+                            showView(SHOW_PROGRESS_VIEW);
                         }
 
                         @Override
                         public void onComplete(SocialMediaItem res) {
-                            LogUtil.log(BASIC_TAG, "updated!");
+                            showView(SHOW_CONTENT);
                             setResult(RESULT_OK);
                             finish();
                         }
@@ -148,12 +151,12 @@ public class EditSocialMediaItemActivity extends AppCompatActivity {
                     new AddSocialMediaItemTask(new SimpleTask.SimpleCallback<SocialMediaItem>() {
                         @Override
                         public void onStart() {
-                            // do nothing
+                            showView(SHOW_PROGRESS_VIEW);
                         }
 
                         @Override
                         public void onComplete(SocialMediaItem res) {
-                            LogUtil.log(BASIC_TAG, "added!");
+                            showView(SHOW_CONTENT);
                             setResult(RESULT_OK);
                             finish();
                         }
@@ -179,5 +182,10 @@ public class EditSocialMediaItemActivity extends AppCompatActivity {
             etPhotoUrl.setText(mSocialMediaItem.getPhotoUrl() != null ? mSocialMediaItem.getPhotoUrl() : "");
             etVideoUrl.setText(mSocialMediaItem.getVideoUrl() != null ? mSocialMediaItem.getVideoUrl() : "");
         }
+    }
+
+    private void showView(int viewId) {
+        pv.setVisibility(viewId == SHOW_PROGRESS_VIEW ? View.VISIBLE : View.GONE);
+        sv.setVisibility(viewId == SHOW_CONTENT ? View.VISIBLE : View.GONE);
     }
 }

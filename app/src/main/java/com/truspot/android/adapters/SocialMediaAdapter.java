@@ -1,6 +1,7 @@
 package com.truspot.android.adapters;
 
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -107,6 +108,7 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         ApiHolder viewHolder = (ApiHolder) holder;
         SocialMediaItem item = mData.get(position);
 
+        /*
         viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -114,6 +116,7 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 return false;
             }
         });
+        */
 
         viewHolder.tv.setText(String.valueOf(item.getId()));
     }
@@ -124,7 +127,8 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             extends
                 RecyclerView.ViewHolder
             implements
-                View.OnCreateContextMenuListener {
+                View.OnCreateContextMenuListener,
+                View.OnClickListener {
 
         // UI variables
         @Bind(R.id.tv_item_api)
@@ -137,12 +141,22 @@ public class SocialMediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ButterKnife.bind(this, itemView);
 
             itemView.setOnCreateContextMenuListener(this);
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.add(Menu.NONE, Constants.MENU_EDIT, Menu.NONE, mContext.getString(R.string.menu_edit));
             menu.add(Menu.NONE, Constants.MENU_DELETE, Menu.NONE, mContext.getString(R.string.menu_delete));
+        }
+
+        @Override
+        public void onClick(View v) {
+            setPosition(getAdapterPosition());
+
+            if (mContext instanceof AppCompatActivity) {
+                ((AppCompatActivity) mContext).openContextMenu(v);
+            }
         }
     }
 }
