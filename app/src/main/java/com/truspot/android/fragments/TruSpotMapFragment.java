@@ -54,7 +54,6 @@ public class TruSpotMapFragment
     public static final String BASIC_TAG = TruSpotMapFragment.class.getName();
 
     // private constants
-    private final static String BUNDLE_KEY_MAP_STATE = "map_data";
     private static final LatLng USA = new LatLng(37.09024, -95.712891);
 
     // variables
@@ -89,14 +88,7 @@ public class TruSpotMapFragment
 
         ButterKnife.bind(this, view);
 
-        Bundle mapState = null;
-
-        if (savedInstanceState != null) {
-            // Load the map state bundle from the main savedInstanceState
-            mapState = savedInstanceState.getBundle(BUNDLE_KEY_MAP_STATE);
-        }
-
-        mv.onCreate(mapState);
+        mv.onCreate(savedInstanceState);
 
         return view;
     }
@@ -136,20 +128,6 @@ public class TruSpotMapFragment
         if (mv != null) {
             mv.onLowMemory();
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        // Save the map state to it's own bundle
-        Bundle mapState = new Bundle();
-
-        if (mv != null) {
-            mv.onSaveInstanceState(mapState);
-        }
-
-        // Put the map bundle in the main outState
-        outState.putBundle(BUNDLE_KEY_MAP_STATE, mapState);
-        super.onSaveInstanceState(outState);
     }
 
     @Override
