@@ -63,6 +63,7 @@ public class MainActivity
     private SearchManager mSearchManager;
     private List<VenueFull> mVenuesList;
     private MapSettings mMapSettings;
+    private MenuItem mSearchItem;
 
     // UI
     private SearchView searchView;
@@ -100,9 +101,9 @@ public class MainActivity
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
 
-        MenuItem searchItem = menu.findItem(R.id.menu_search);
+        mSearchItem = menu.findItem(R.id.menu_search);
 
-        searchView = (SearchView) searchItem.getActionView();
+        searchView = (SearchView) mSearchItem.getActionView();
         searchView.setSearchableInfo(mSearchManager.getSearchableInfo(MainActivity.this.getComponentName()));
 
         return true;
@@ -245,6 +246,11 @@ public class MainActivity
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+
+                        // searchView.setIconified(true);
+                        // searchView.clearFocus();
+
+                        mSearchItem.collapseActionView();
                     }
                 }
             }
@@ -283,7 +289,7 @@ public class MainActivity
 
     @Override
     public MapSettings getMapSettings() {
-        return null;
+        return mMapSettings;
     }
 
     // inner classes
