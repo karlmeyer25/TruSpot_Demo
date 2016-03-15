@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
-
 import com.rey.material.app.Dialog;
 import com.rey.material.app.SimpleDialog;
 import com.squareup.picasso.Picasso;
@@ -24,16 +23,19 @@ import com.truspot.android.R;
 import com.truspot.android.adapters.SuggestionAdapter;
 import com.truspot.android.fragments.NearbyFragment;
 import com.truspot.android.fragments.TruSpotMapFragment;
-import com.truspot.android.interfaces.GotPicasso;
+import com.truspot.android.interfaces.IGotData;
+import com.truspot.android.interfaces.IGotPicasso;
+import com.truspot.android.models.event.MapSettingsEvent;
 import com.truspot.android.models.event.VenuesEvent;
+import com.truspot.android.tasks.GetMapSettingsTask;
 import com.truspot.android.tasks.GetVenuesFullTask;
 import com.truspot.android.tasks.abstracts.SimpleTask;
 import com.truspot.android.utils.IntentUtil;
 import com.truspot.android.utils.LogUtil;
 import com.truspot.android.utils.Util;
+import com.truspot.backend.api.model.MapSettings;
 import com.truspot.backend.api.model.VenueFull;
 import org.greenrobot.eventbus.EventBus;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +46,8 @@ public class MainActivity
         extends
             AppCompatActivity
         implements
-            GotPicasso {
+            IGotPicasso,
+            IGotData{
 
     // constants
     public static final String BASIC_TAG = MainActivity.class.getName();
@@ -59,6 +62,7 @@ public class MainActivity
     private Picasso mPicasso;
     private SearchManager mSearchManager;
     private List<VenueFull> mVenuesList;
+    private MapSettings mMapSettings;
 
     // UI
     private SearchView searchView;
@@ -85,6 +89,7 @@ public class MainActivity
 
         if (Util.hasConnection(this)) {
             loadVenues();
+            loadMapSettings();
         } else {
             showNoInternetDialog();
         }
@@ -181,13 +186,11 @@ public class MainActivity
                 LogUtil.log(TAG, "onStart");
 
                 // TODO : this event is never posted on its subscribers...
-                mBus.post(new VenuesEvent.StartLoading());
+                //mBus.post(new VenuesEvent.StartLoading());
             }
 
             @Override
             public void onComplete(List<VenueFull> res) {
-                mBus.post(new VenuesEvent.CompleteLoading(res));
-
                 mVenuesList = res;
 
                 mSuggestionAdapter = new SuggestionAdapter(MainActivity.this,
@@ -195,6 +198,31 @@ public class MainActivity
                         getVenueNames(res));
 
                 initSearchAutocompleteView();
+
+                mBus.post(new VenuesEvent.CompleteLoading(res));
+            }
+
+        }).execute();
+    }
+
+    private void loadMapSettings() {
+        final String TAG = Util.stringsToPath(BASIC_TAG, "loadMapSettings");
+
+        new GetMapSettingsTask(new SimpleTask.SimpleCallback<MapSettings>() {
+
+            @Override
+            public void onStart() {
+                LogUtil.log(TAG, "onStart");
+
+                // TODO : this event is never posted on its subscribers...
+                // mBus.post(new MapSettingsEvent.StartLoading());
+            }
+
+            @Override
+            public void onComplete(MapSettings res) {
+                mMapSettings = res;
+
+                mBus.post(new MapSettingsEvent.CompleteLoading(res));
             }
 
         }).execute();
@@ -246,6 +274,16 @@ public class MainActivity
     @Override
     public Picasso getPicasso() {
         return mPicasso;
+    }
+
+    @Override
+    public List<VenueFull> getVenues() {
+        return mVenuesList;
+    }
+
+    @Override
+    public MapSettings getMapSettings() {
+        return null;
     }
 
     // inner classes

@@ -20,7 +20,7 @@ import com.squareup.picasso.Picasso;
 import com.truspot.android.R;
 import com.truspot.android.enums.SocialMediaEnum;
 import com.truspot.android.fragments.SocialItemFragment;
-import com.truspot.android.interfaces.GotPicasso;
+import com.truspot.android.interfaces.IGotPicasso;
 import com.truspot.android.utils.GoogleUtil;
 import com.truspot.android.utils.IntentUtil;
 import com.truspot.android.utils.LogUtil;
@@ -38,7 +38,7 @@ public class SocialItemActivity
         extends
             AppCompatActivity
         implements
-            GotPicasso {
+        IGotPicasso {
 
     // constants
     public static final String BASIC_TAG = SocialItemActivity.class.getName();

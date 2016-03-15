@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.rey.material.widget.ProgressView;
 import com.squareup.picasso.Picasso;
@@ -19,25 +18,23 @@ import com.truspot.android.R;
 import com.truspot.android.activities.VenueActivity;
 import com.truspot.android.adapters.VenuesAdapter;
 import com.truspot.android.comparators.DistanceComparator;
-import com.truspot.android.interfaces.GotPicasso;
-import com.truspot.android.interfaces.VenueClickListener;
+import com.truspot.android.interfaces.IGotData;
+import com.truspot.android.interfaces.IGotPicasso;
+import com.truspot.android.interfaces.IVenueClickListener;
 import com.truspot.android.models.event.LocationEvent;
 import com.truspot.android.models.event.VenuesEvent;
 import com.truspot.android.ui.DividerItemDecoration;
 import com.truspot.android.utils.LogUtil;
 import com.truspot.android.utils.Util;
 import com.truspot.backend.api.model.VenueFull;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -45,7 +42,7 @@ public class NearbyFragment
         extends
             Fragment
         implements
-            VenueClickListener {
+        IVenueClickListener {
 
     // constants
     public static final String BASIC_TAG = NearbyFragment.class.getName();
@@ -58,6 +55,7 @@ public class NearbyFragment
     private EventBus mBus;
     private Location mMyLocation;
     private Picasso mPicasso;
+    private IGotData mData;
     private VenuesAdapter mAdapter;
     private Map<VenueFull, LatLng> mLocationsMap;
 
@@ -82,38 +80,50 @@ public class NearbyFragment
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try {
+            mPicasso = ((IGotPicasso) activity).getPicasso();
+            mData = (IGotData) activity;
+        } catch(ClassCastException e) {
+            throw new ClassCastException(
+                    activity.toString() +
+                            " must implement " + IGotPicasso.class.getName() + " and " + IGotData.class.getName());
+        }
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         initVariables();
         setUiSettings();
-        showView(SHOW_PROGRESS_VIEW);
-    }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        try {
-            mPicasso = ((GotPicasso) activity).getPicasso();
-        } catch(ClassCastException e) {
-            throw new ClassCastException(
-                    activity.toString() +
-                            " must implement " + GotPicasso.class.getName());
+        if (Util.isListNotEmpty(mData.getVenues())) {
+            showVenues(mData.getVenues());
+        } else {
+            showView(SHOW_PROGRESS_VIEW);
         }
     }
 
+/*
     @Subscribe
     public void onEvent(VenuesEvent.StartLoading event) {
         // TODO : this is never called. Analyze why.
     }
+*/
 
     @Subscribe
     public void onEvent(VenuesEvent.CompleteLoading event) {
+        showVenues(event.getVenues());
+    }
+
+    private void showVenues(List<VenueFull> venues) {
         if (mMyLocation != null) {
-            updateAdapter(event.getVenues());
+            updateAdapter(venues);
         } else {
-            resetAdapter(event.getVenues());
+            resetAdapter(venues);
         }
     }
 

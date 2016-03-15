@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso;
 import com.truspot.android.R;
 import com.truspot.android.activities.PlayVideoActivity;
 import com.truspot.android.enums.SocialMediaEnum;
-import com.truspot.android.interfaces.GotPicasso;
+import com.truspot.android.interfaces.IGotPicasso;
 import com.truspot.android.picasso.RoundedTransformation;
 import com.truspot.android.utils.GoogleUtil;
 import com.truspot.android.utils.LogUtil;
@@ -91,11 +91,11 @@ public class SocialItemFragment extends Fragment {
         super.onAttach(activity);
 
         try {
-            mPicasso = ((GotPicasso) activity).getPicasso();
+            mPicasso = ((IGotPicasso) activity).getPicasso();
         } catch(ClassCastException e) {
             throw new ClassCastException(
                     activity.toString() +
-                            " must implement " + GotPicasso.class.getName());
+                            " must implement " + IGotPicasso.class.getName());
         }
     }
 

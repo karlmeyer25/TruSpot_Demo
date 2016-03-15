@@ -2,7 +2,7 @@ package com.truspot.android.utils;
 
 import android.util.Log;
 import com.truspot.android.constants.Constants;
-import com.truspot.android.interfaces.Loggable;
+import com.truspot.android.interfaces.ILoggable;
 import com.truspot.android.models.LogRecordPair;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -84,17 +84,17 @@ public class LogUtil {
 	}
 */
 
-	public static void logList(int type, String tag, String msg, List<? extends Loggable> list) {
+	public static void logList(int type, String tag, String msg, List<? extends ILoggable> list) {
 		if (list != null && !list.isEmpty()) {
-			for (Loggable item : list) {
+			for (ILoggable item : list) {
 				log(type, tag, msg + " " + item.toLog());
 			}
 		}
 	}
 
-	public static void logArray(int type, String tag, String msg, Loggable[] arr) {
+	public static void logArray(int type, String tag, String msg, ILoggable[] arr) {
 		if (arr != null && arr.length > 0) {
-			for (Loggable item : arr) {
+			for (ILoggable item : arr) {
 				log(type, tag, msg + " " + item.toLog());
 			}
 		}
@@ -152,7 +152,7 @@ public class LogUtil {
 		return sb.toString();
 	}
 	
-	public static String getLogFromList(Collection<? extends Loggable> list) {
+	public static String getLogFromList(Collection<? extends ILoggable> list) {
 		String result;
 
 		result = "[";
@@ -160,7 +160,7 @@ public class LogUtil {
 		if (list == null || list.isEmpty()) {
 			result += "null";
 		} else {
-			for (Loggable log : list) {
+			for (ILoggable log : list) {
 				result += log.toLog() + ", ";
 			}
 
@@ -262,7 +262,7 @@ public class LogUtil {
 		return result;
 	}
 
-	public static String getLogFromArray(Loggable[] arr) {
+	public static String getLogFromArray(ILoggable[] arr) {
 		String result;
 
 		result = "[";
@@ -270,7 +270,7 @@ public class LogUtil {
 		if (arr == null || arr.length == 0) {
 			result += "null";
 		} else {
-			for (Loggable obj : arr) {
+			for (ILoggable obj : arr) {
 				result += obj.toLog() + ", ";
 			}
 

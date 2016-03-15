@@ -1,5 +1,6 @@
 package com.truspot.android.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.location.Address;
 import android.location.Geocoder;
@@ -10,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,22 +24,22 @@ import com.rey.material.widget.FloatingActionButton;
 import com.truspot.android.R;
 import com.truspot.android.activities.VenueActivity;
 import com.truspot.android.constants.Constants;
+import com.truspot.android.interfaces.IGotData;
 import com.truspot.android.models.event.LocationEvent;
+import com.truspot.android.models.event.MapSettingsEvent;
 import com.truspot.android.models.event.VenuesEvent;
 import com.truspot.android.utils.LocationUtil;
 import com.truspot.android.utils.LogUtil;
 import com.truspot.android.utils.Util;
+import com.truspot.backend.api.model.MapSettings;
 import com.truspot.backend.api.model.Venue;
 import com.truspot.backend.api.model.VenueFull;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -58,10 +58,12 @@ public class TruSpotMapFragment
     private static final LatLng USA = new LatLng(37.09024, -95.712891);
 
     // variables
+    private IGotData mData;
     private GoogleMap mGoogleMap;
     private EventBus mBus;
     private Location mCurrLocation;
     private List<VenueFull> mVenues;
+    private MapSettings mMapSettings;
     private HashMap<String, VenueFull> mMarkerVenueMap;
     private boolean mVenuesLoaded;
 
@@ -102,13 +104,33 @@ public class TruSpotMapFragment
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try {
+            mData = (IGotData) activity;
+        } catch(ClassCastException e) {
+            throw new ClassCastException(
+                    activity.toString() +
+                            " must implement " + IGotData.class.getName());
+        }
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         initVariables();
         initListeners();
-        showProgress();
         getMapAsync();
+
+        if (Util.isListNotEmpty(mData.getVenues())) {
+            mVenues = mData.getVenues();
+        } else {
+            showProgress();
+        }
+
+        mMapSettings = mData.getMapSettings();
     }
 
     @Override
@@ -176,24 +198,33 @@ public class TruSpotMapFragment
                     LatLng latLng = new LatLng(mCurrLocation.getLatitude(),
                             mCurrLocation.getLongitude());
 
-                    updateCamera(latLng);
+                    updateCamera(latLng, Constants.DEFAULT_CAMERA_ZOOM);
                 }
             }
         });
     }
 
+/*
     @Subscribe
     public void onEvent(VenuesEvent.StartLoading event) {
         LogUtil.log(BASIC_TAG, "start loading");
 
         // TODO : not called
     }
+*/
 
     @Subscribe
     public void onEvent(VenuesEvent.CompleteLoading event) {
         mVenues = event.getVenues();
 
         tryLoadVenuesOnMap();
+    }
+
+    @Subscribe
+    public void onEvent(MapSettingsEvent.CompleteLoading event) {
+        mMapSettings = event.getMs();
+
+        tryLoadMapSettings();
     }
 
     private void showProgress() {
@@ -228,9 +259,10 @@ public class TruSpotMapFragment
 
         mGoogleMap.setOnInfoWindowClickListener(this);
 
-        updateCamera(USA);
+        updateCamera(USA, Constants.DEFAULT_CAMERA_ZOOM);
 
         tryLoadVenuesOnMap();
+        tryLoadMapSettings();
     }
 
     private void tryLoadVenuesOnMap() {
@@ -248,7 +280,7 @@ public class TruSpotMapFragment
 
         mGoogleMap.clear();
 
-        LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+        //LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
 
         if (mMarkerVenueMap != null) {
             mMarkerVenueMap.clear();
@@ -264,12 +296,22 @@ public class TruSpotMapFragment
 
             mMarkerVenueMap.put(marker.getId(), vf);
 
-            boundsBuilder.include(new LatLng(venue.getLat(), venue.getLng()));
+            //boundsBuilder.include(new LatLng(venue.getLat(), venue.getLng()));
         }
 
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), Util.convertDpiToPixels(getActivity(), 20)));
+        //mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), Util.convertDpiToPixels(getActivity(), 20)));
 
         flProgress.setVisibility(View.GONE);
+    }
+
+    private void tryLoadMapSettings() {
+        if (mGoogleMap != null && mMapSettings != null) {
+            if (mMapSettings.getLat() != null && mMapSettings.getLng() != null) {
+                updateCamera(new LatLng(mMapSettings.getLat(), mMapSettings.getLng()), mMapSettings.getZoom());
+            }/* else {
+                updateCamera(USA, Constants.DEFAULT_CAMERA_ZOOM);
+            }*/
+        }
     }
 
     private int findMaxCapacity() {
@@ -284,10 +326,10 @@ public class TruSpotMapFragment
         return max;
     }
 
-    private void updateCamera(LatLng location) {
+    private void updateCamera(LatLng location, int zoom) {
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
                 location,
-                Constants.DEFAULT_CAMERA_ZOOM);
+                zoom);
 
         mGoogleMap.moveCamera(cameraUpdate);
     }

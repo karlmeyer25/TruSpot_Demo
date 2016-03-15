@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.truspot.android.R;
 import com.truspot.android.constants.Constants;
-import com.truspot.android.interfaces.VenueClickListener;
+import com.truspot.android.interfaces.IVenueClickListener;
 import com.truspot.android.picasso.RoundedTransformation;
 import com.truspot.android.utils.Util;
 import com.truspot.backend.api.model.VenueFull;
@@ -36,7 +36,7 @@ public class VenuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     // variables
     private Context mContext;
     private Picasso mPicasso;
-    private VenueClickListener mCallback;
+    private IVenueClickListener mCallback;
     private List<VenueFull> mData;
     private boolean mIsApiList;
     private int mPosition;
@@ -44,7 +44,7 @@ public class VenuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     // constructor
     public VenuesAdapter(Context context,
                          Picasso picasso,
-                         VenueClickListener callback,
+                         IVenueClickListener callback,
                          boolean isApiList) {
         this.mContext = context;
         this.mPicasso = picasso;
