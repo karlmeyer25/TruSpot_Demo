@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,7 +19,6 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.rey.material.widget.FloatingActionButton;
 import com.truspot.android.R;
@@ -34,12 +34,15 @@ import com.truspot.android.utils.Util;
 import com.truspot.backend.api.model.MapSettings;
 import com.truspot.backend.api.model.Venue;
 import com.truspot.backend.api.model.VenueFull;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -91,14 +94,14 @@ public class TruSpotMapFragment
 
         ButterKnife.bind(this, view);
 
-        Bundle mapState = null;
+/*        Bundle mapState = null;
 
         if (savedInstanceState != null) {
             // Load the map state bundle from the main savedInstanceState
             mapState = savedInstanceState.getBundle(BUNDLE_KEY_MAP_STATE);
-        }
+        }*/
 
-        mv.onCreate(mapState);
+        mv.onCreate(savedInstanceState);
 
         return view;
     }
@@ -137,27 +140,21 @@ public class TruSpotMapFragment
     public void onResume() {
         super.onResume();
 
-        if (mv != null) {
-            mv.onResume();
-        }
+        mv.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        if (mv != null) {
-            mv.onPause();
-        }
+        mv.onPause();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
 
-        if (mv != null) {
-            mv.onLowMemory();
-        }
+        mv.onLowMemory();
     }
 
     @Override
@@ -165,9 +162,11 @@ public class TruSpotMapFragment
         // Save the map state to it's own bundle
         Bundle mapState = new Bundle();
 
+/*
         if (mv != null) {
             mv.onSaveInstanceState(mapState);
         }
+*/
 
         // Put the map bundle in the main outState
         outState.putBundle(BUNDLE_KEY_MAP_STATE, mapState);
@@ -180,9 +179,7 @@ public class TruSpotMapFragment
 
         mBus.unregister(this);
 
-        if (mv != null) {
-            mv.onDestroy();
-        }
+        mv.onDestroy();
     }
 
     private void initVariables() {
