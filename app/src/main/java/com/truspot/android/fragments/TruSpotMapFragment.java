@@ -149,6 +149,7 @@ public class TruSpotMapFragment
         mv.onLowMemory();
     }
 
+    @Override
     public void onDestroy() {
         super.onDestroy();
 
