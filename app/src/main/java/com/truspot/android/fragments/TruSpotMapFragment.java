@@ -282,7 +282,8 @@ public class TruSpotMapFragment
     private void tryLoadMapSettings() {
         if (mGoogleMap != null && mMapSettings != null) {
             if (mMapSettings.getLat() != null && mMapSettings.getLng() != null) {
-                updateCamera(new LatLng(mMapSettings.getLat(), mMapSettings.getLng()), mMapSettings.getZoom());
+                updateCamera(new LatLng(mMapSettings.getLat(), mMapSettings.getLng()),
+                        mMapSettings.getZoom() != null ? mMapSettings.getZoom() : Constants.DEFAULT_CAMERA_ZOOM);
             }/* else {
                 updateCamera(USA, Constants.DEFAULT_CAMERA_ZOOM);
             }*/
