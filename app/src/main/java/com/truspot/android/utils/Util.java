@@ -30,6 +30,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.truspot.android.constants.Constants;
+import com.truspot.backend.api.model.VenueFull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -387,5 +388,17 @@ public class Util {
 
     public static String getYoutubeIdFromUrl(String youtubeUrl) {
         return youtubeUrl.substring(youtubeUrl.length() - Constants.YOUTUBE_ID_LENGTH);
+    }
+
+    public static int findMaxVenueCapacity(List<VenueFull> venues) {
+        int max = 0;
+
+        for (VenueFull vf : venues) {
+            if (vf.getVenue().getCapacity() > max) {
+                max = vf.getVenue().getCapacity();
+            }
+        }
+
+        return max;
     }
 }

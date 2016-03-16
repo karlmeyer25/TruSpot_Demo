@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_8"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true"
         app:fab_iconSrc="@drawable/ic_my_location_black_24dp"
         style="@style/FAB" />
     <TextView

@@ -64,6 +64,7 @@ public class MainActivity
     private List<VenueFull> mVenuesList;
     private MapSettings mMapSettings;
     private MenuItem mSearchItem;
+    private int mMaxCapacity;
 
     // UI
     private SearchView searchView;
@@ -194,6 +195,8 @@ public class MainActivity
             public void onComplete(List<VenueFull> res) {
                 mVenuesList = res;
 
+                mMaxCapacity = Util.findMaxVenueCapacity(res);
+
                 mSuggestionAdapter = new SuggestionAdapter(MainActivity.this,
                         R.layout.item_search,
                         getVenueNames(res));
@@ -242,7 +245,10 @@ public class MainActivity
                     VenueFull venueFull = findVenueByName(((TextView) view).getText().toString());
                     if (venueFull != null) {
                         try {
-                            startActivity(VenueActivity.getIntent(MainActivity.this, venueFull));
+                            startActivity(VenueActivity.getIntent(MainActivity.this,
+                                    venueFull,
+                                    mMaxCapacity,
+                                    mMapSettings != null ? mMapSettings.getZoom() : 0));
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
