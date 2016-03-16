@@ -68,6 +68,7 @@ public class TruSpotMapFragment
     private MapSettings mMapSettings;
     private HashMap<String, VenueFull> mMarkerVenueMap;
     private boolean mVenuesLoaded;
+    private int mMaxCapacity;
 
     // UI
     @Bind(R.id.mv_fragment_truspot_map)
@@ -261,12 +262,12 @@ public class TruSpotMapFragment
         }
 
         mMarkerVenueMap = new HashMap<>();
-        int maxCapacity = findMaxCapacity();
+        mMaxCapacity = Util.findMaxVenueCapacity(mVenues);
 
         for (VenueFull vf : mVenues) {
             Venue venue = vf.getVenue();
 
-            Marker marker = LocationUtil.addVenueMarker(getActivity(), mGoogleMap, venue, maxCapacity);
+            Marker marker = LocationUtil.addVenueMarker(getActivity(), mGoogleMap, venue, mMaxCapacity);
 
             mMarkerVenueMap.put(marker.getId(), vf);
 
@@ -286,18 +287,6 @@ public class TruSpotMapFragment
                 updateCamera(USA, Constants.DEFAULT_CAMERA_ZOOM);
             }*/
         }
-    }
-
-    private int findMaxCapacity() {
-        int max = 0;
-
-        for (VenueFull vf : mVenues) {
-            if (vf.getVenue().getCapacity() > max) {
-                max = vf.getVenue().getCapacity();
-            }
-        }
-
-        return max;
     }
 
     private void updateCamera(LatLng location, int zoom) {
@@ -334,7 +323,10 @@ public class TruSpotMapFragment
     @Override
     public boolean onMarkerClick(Marker marker) {
         try {
-            startActivity(VenueActivity.getIntent(getActivity(), mMarkerVenueMap.get(marker.getId())));
+            startActivity(VenueActivity.getIntent(getActivity(),
+                    mMarkerVenueMap.get(marker.getId()),
+                    mMaxCapacity,
+                    mMapSettings != null ? mMapSettings.getZoom() : 0));
         } catch (IOException e) {
             e.printStackTrace();
         }

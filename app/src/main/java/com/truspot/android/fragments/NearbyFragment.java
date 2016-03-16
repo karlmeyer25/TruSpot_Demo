@@ -22,6 +22,7 @@ import com.truspot.android.interfaces.IGotData;
 import com.truspot.android.interfaces.IGotPicasso;
 import com.truspot.android.interfaces.IVenueClickListener;
 import com.truspot.android.models.event.LocationEvent;
+import com.truspot.android.models.event.MapSettingsEvent;
 import com.truspot.android.models.event.VenuesEvent;
 import com.truspot.android.ui.DividerItemDecoration;
 import com.truspot.android.utils.LogUtil;
@@ -58,6 +59,8 @@ public class NearbyFragment
     private IGotData mData;
     private VenuesAdapter mAdapter;
     private Map<VenueFull, LatLng> mLocationsMap;
+    private int mMaxCapacity;
+    private int mMapZoom;
 
     // UI
     @Bind(R.id.rv_fragment_nearby)
@@ -117,6 +120,12 @@ public class NearbyFragment
     @Subscribe
     public void onEvent(VenuesEvent.CompleteLoading event) {
         showVenues(event.getVenues());
+        mMaxCapacity = Util.findMaxVenueCapacity(event.getVenues());
+    }
+
+    @Subscribe
+    public void onEvent(MapSettingsEvent.CompleteLoading event) {
+        mMapZoom = event.getMs().getZoom();
     }
 
     private void showVenues(List<VenueFull> venues) {
@@ -150,7 +159,7 @@ public class NearbyFragment
     @Override
     public void onVenueClick(VenueFull venueFull) {
         try {
-            startActivity(VenueActivity.getIntent(getActivity(), venueFull));
+            startActivity(VenueActivity.getIntent(getActivity(), venueFull, mMaxCapacity, mMapZoom));
         } catch (IOException e) {
             e.printStackTrace();
         }

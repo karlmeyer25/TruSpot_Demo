@@ -26,11 +26,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.rey.material.widget.Button;
 import com.truspot.android.R;
 import com.truspot.android.animations.ViewMover;
+import com.truspot.android.models.event.MapSettingsEvent;
 import com.truspot.android.utils.GoogleUtil;
 import com.truspot.android.utils.LocationUtil;
 import com.truspot.android.utils.LogUtil;
 import com.truspot.android.utils.Util;
+import com.truspot.backend.api.model.MapSettings;
 import com.truspot.backend.api.model.VenueFull;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 
@@ -49,7 +54,8 @@ public class VenueActivity
     public static final String BASIC_TAG = VenueActivity.class.getName();
 
     private static final String BUNDLE_VF = "vf";
-    private final static String BUNDLE_KEY_MAP_STATE = "venue_map_data";
+    private static final String BUNDLE_MAX_CAPACITY = "max_capacity";
+    private static final String BUNDLE_MAP_ZOOM = "map_zoom";
 
     private static final int MODE_NORMAL = 1;
     private static final int MODE_EXTENDED_MAP = 2;
@@ -58,6 +64,8 @@ public class VenueActivity
 
     // variables
     private VenueFull mVf;
+    private int mMaxCapacity;
+    private int mMapZoom;
     private GoogleMap mGoogleMap;
     private Resources mRes;
     private int mScreenWidth;
@@ -69,6 +77,8 @@ public class VenueActivity
     private int mToolbarHeight;
     private int mCurrMode;
     private ViewMover mViewMover;
+    private EventBus mBus;
+    private MapSettings mMapSettings;
 
     // UI
     @Bind(R.id.toolbar_activity_venue)
@@ -85,10 +95,15 @@ public class VenueActivity
     TextView tvDescription;
 
     // static methods
-    public static Intent getIntent(Context context, VenueFull vf) throws IOException {
+    public static Intent getIntent(Context context,
+                                   VenueFull vf,
+                                   int maxCapacity,
+                                   int mapZoom) throws IOException {
         Intent intent = new Intent(context, VenueActivity.class);
 
         intent.putExtra(BUNDLE_VF, GoogleUtil.objectToJsonString(vf));
+        intent.putExtra(BUNDLE_MAX_CAPACITY, maxCapacity);
+        intent.putExtra(BUNDLE_MAP_ZOOM, mapZoom);
 
         return intent;
     }
@@ -113,9 +128,7 @@ public class VenueActivity
     public void onResume() {
         super.onResume();
 
-        if (mv != null) {
-            mv.onResume();
-        }
+        mv.onResume();
     }
 
     @Override
@@ -131,32 +144,16 @@ public class VenueActivity
     public void onLowMemory() {
         super.onLowMemory();
 
-        if (mv != null) {
-            mv.onLowMemory();
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        // Save the map state to it's own bundle
-        Bundle mapState = new Bundle();
-
-        if (mv != null) {
-            mv.onSaveInstanceState(mapState);
-        }
-
-        // Put the map bundle in the main outState
-        outState.putBundle(BUNDLE_KEY_MAP_STATE, mapState);
-        super.onSaveInstanceState(outState);
+        mv.onLowMemory();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
 
-        if (mv != null) {
-            mv.onDestroy();
-        }
+        mBus.unregister(this);
+
+        mv.onDestroy();
     }
 
     @Override
@@ -182,6 +179,17 @@ public class VenueActivity
         }
     }
 
+    @Subscribe
+    public void onEvent(MapSettingsEvent.CompleteLoading event) {
+        mMapSettings = event.getMs();
+
+        if (mGoogleMap != null && mVf != null) {
+            LatLng venueLatLng = new LatLng(mVf.getVenue().getLat(), mVf.getVenue().getLng());
+            updateCamera(venueLatLng, mMapSettings.getZoom(), false);
+        }
+
+    }
+
     private void initExtras() {
         //final String TAG = Util.stringsToPath(BASIC_TAG, "initExtas");
 
@@ -192,6 +200,9 @@ public class VenueActivity
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        mMaxCapacity = getIntent().getIntExtra(BUNDLE_MAX_CAPACITY, 0);
+        mMapZoom = getIntent().getIntExtra(BUNDLE_MAP_ZOOM, 0);
     }
 
     private void initVariables() {
@@ -201,6 +212,9 @@ public class VenueActivity
         mScreenHeight = Util.getScreenDimensions(this).y;
 
         mCurrMode = MODE_NORMAL;
+
+        mBus = EventBus.getDefault();
+        mBus.register(this);
     }
 
     private void initListeners() {
@@ -272,13 +286,7 @@ public class VenueActivity
     }
 
     private void loadMap(Bundle savedInstanceState) {
-        Bundle mapState = null;
-
-        if (savedInstanceState != null) {
-            mapState = savedInstanceState.getBundle(BUNDLE_KEY_MAP_STATE);
-        }
-
-        mv.onCreate(mapState);
+        mv.onCreate(savedInstanceState);
         mv.getMapAsync(this);
     }
 
@@ -343,13 +351,36 @@ public class VenueActivity
 
         mGoogleMap.setPadding(isPortrait ? 0 : notVisibleArea, 0, 0, isPortrait ? notVisibleArea : 0);
 
-        LocationUtil.addVenueMarker(this, mGoogleMap, mVf.getVenue(), mVf.getVenue().getCapacity());
+        LocationUtil.addVenueMarker(this, mGoogleMap, mVf.getVenue(), mMaxCapacity);
 
         LatLng venueLatLng = new LatLng(mVf.getVenue().getLat(), mVf.getVenue().getLng());
 
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
+/*        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
                 venueLatLng,
                 calculateZoom(mGoogleMap, area, notVisibleArea));
+
+        if (withAnimation) {
+            mGoogleMap.animateCamera(cameraUpdate, ANIM_DURATION, null);
+        } else {
+            mGoogleMap.moveCamera(cameraUpdate);
+        }*/
+
+        if (mMapSettings != null) {
+            LogUtil.log(BASIC_TAG, "first");
+            updateCamera(venueLatLng, mMapSettings.getZoom(), withAnimation);
+        } else if (mMapZoom != 0) {
+            LogUtil.log(BASIC_TAG, "second");
+            updateCamera(venueLatLng, mMapZoom, withAnimation);
+        } else {
+            LogUtil.log(BASIC_TAG, "third");
+            updateCamera(venueLatLng, calculateZoom(mGoogleMap, area, notVisibleArea), withAnimation);
+        }
+    }
+
+    private void updateCamera(LatLng location, float zoom, boolean withAnimation) {
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
+                location,
+                zoom);
 
         if (withAnimation) {
             mGoogleMap.animateCamera(cameraUpdate, ANIM_DURATION, null);
