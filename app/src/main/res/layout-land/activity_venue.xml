@@ -63,13 +63,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/margin_8"
-                    android:src="@drawable/ic_compass_18dp"/>
+                    android:layout_marginLeft="@dimen/margin_16"
+                    android:src="@drawable/ic_compass_24dp"/>
                 <TextView
                     android:id="@+id/tv_activity_venue_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_8"
+                    android:layout_marginLeft="40dp"
                     android:text="Baba Vida"
                     android:textColor="@color/venue_primary_text"
                     android:layout_gravity="center_vertical"
@@ -86,13 +86,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/margin_8"
-                    android:src="@drawable/ic_speedometer_18dp"/>
+                    android:layout_marginLeft="@dimen/margin_16"
+                    android:src="@drawable/ic_speedometer_24dp"/>
                 <TextView
                     android:id="@+id/tv_activity_venue_popularity_subtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_8"
+                    android:layout_marginLeft="40dp"
                     android:text="You should be here"
                     android:textColor="@color/venue_primary_text"
                     android:layout_gravity="center_vertical"
@@ -110,7 +110,13 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/margin_8"
-                    android:src="@drawable/ic_car_18dp"/>
+                    android:src="@drawable/ic_uber_24dp"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/margin_2"
+                    android:src="@drawable/ic_lyft_24dp"/>
                 <TextView
                     android:id="@+id/tv_activity_venue_directions"
                     android:layout_width="wrap_content"
