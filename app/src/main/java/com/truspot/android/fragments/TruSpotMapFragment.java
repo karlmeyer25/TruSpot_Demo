@@ -216,7 +216,7 @@ public class TruSpotMapFragment
         UiSettings settings = mGoogleMap.getUiSettings();
 
         settings.setMyLocationButtonEnabled(false);
-        settings.setZoomControlsEnabled(false);
+        settings.setZoomControlsEnabled(true);
 
         // enable my location
         mGoogleMap.setMyLocationEnabled(true);
